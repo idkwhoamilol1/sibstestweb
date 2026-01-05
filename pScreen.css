@@ -545,10 +545,13 @@ body {
     border-bottom: none;
 }
 
+/* 核心：不停靠站点样式强化 - 优先级拉满，确保生效 */
 .stop-row-visible.stop-no-stop {
-    background-color: #fafafa;
-    color: #a0aec0;
-    opacity: 0.85;
+    background-color: #fafbfc !important;
+    color: #94a9b8 !important;
+    opacity: 0.9 !important;
+    border-radius: 8px !important;
+    border: 1px dashed #e2e8f0 !important;
 }
 
 .stop-row-visible:not(.stop-no-stop):hover td {
@@ -571,15 +574,17 @@ body {
     font-style: italic;
 }
 
-.stop-row-visible.stop-no-stop .stop-name-main {
-    color: #a0aec0;
+/* 不停靠站点名称置灰 */
+.stop-no-stop .stop-name-main {
+    color: #a0aec0 !important;
+    font-weight: 500 !important;
 }
 
-.stop-row-visible.stop-no-stop .stop-name-sub {
-    color: #cbd5e0;
+.stop-no-stop .stop-name-sub {
+    color: #cbd5e0 !important;
 }
 
-/* 班次序号和线条 - 定义班次CSS变量（核心修复：解决currentColor歧义问题） */
+/* 班次序号和线条 - 定义班次CSS变量（解决currentColor歧义问题） */
 .line-normal {
     color: #4a90e2;
     --shift-color: #4a90e2; /* 班次原色变量 */
@@ -644,17 +649,6 @@ body {
     background-color: rgba(255, 255, 255, 0.9);
 }
 
-/* 新增：不停靠班次的X标记样式（确保X居中显示，样式统一） */
-.shift-seq-text.no-stop-x {
-    font-size: 18px; /* X字体大小 */
-    color: #e53e3e !important; /* X字体颜色（红色醒目） */
-    border-color: #e53e3e !important; /* 边框颜色与X一致 */
-    background-color: rgba(255, 255, 255, 0.6) !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .shift-seq-line {
     background-color: currentColor;
     opacity: 0.85;
@@ -664,19 +658,82 @@ body {
     margin: 0;
 }
 
-/* 核心修改：不停靠班次线条改为虚线显示，保留视觉关联（移除隐藏，添加dashed样式） */
-.stop-row-visible.stop-no-stop .shift-seq-line {
-    background-color: transparent !important; /* 隐藏纯色背景，显示虚线边框 */
-    border: 2px dashed #cbd5e0 !important; /* 虚线样式 + 浅灰色，视觉区分 */
-    opacity: 0.8 !important; /* 调整透明度，不突兀 */
-    width: 0 !important; /* 缩窄宽度，让虚线更美观 */
+/* 核心：不停靠班次线条 - 虚线样式，优先级拉满 */
+.stop-no-stop .shift-seq-line {
+    background-color: transparent !important;
+    border: 2px dashed #cbd5e1 !important;
+    width: 0 !important;
+    opacity: 0.8 !important;
+    height: 32px !important;
 }
 
-.stop-row-visible.stop-no-stop .shift-seq-text {
-    color: #94a3b8 !important;
-    border-color: #94a3b8 !important;
-    background-color: rgba(255, 255, 255, 0.6) !important;
-    /* 保留序号显示，不隐藏，仅调整样式 */
+/* 终极修复：不停靠班次序号占位 - 精准选择器 + !important 强制生效 */
+.stop-row-visible.stop-no-stop .single-shift-seq-wrap .shift-seq-text {
+    color: transparent !important; /* 隐藏文字，保留占位 */
+    background-color: #f1f5f9 !important; /* 浅灰背景 */
+    border: 2px solid #cbd5e1 !important; /* 浅灰边框 */
+    border-radius: 50% !important; /* 圆形占位 */
+    width: 24px !important; /* 固定宽高 */
+    height: 24px !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* 兜底：单独匹配不停靠班次容器的序号 */
+.single-shift-seq-wrap.seq-wrap-middle-no-stop .shift-seq-text {
+    color: transparent !important;
+    background-color: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+    border-radius: 50% !important;
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* 确保不停靠班次容器不隐藏，优先级拉满 */
+.single-shift-seq-wrap.seq-wrap-middle-no-stop {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 88px !important;
+    width: 40px !important;
+}
+
+/* 核心样式：班次始发点+终点 - 圆形+班次原色背景+纯白色文字 */
+.single-shift-seq-wrap.shift-start-end-stop .shift-seq-text {
+  background-color: var(--shift-color) !important;
+  color: #ffffff !important;
+  font-weight: bold;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* 始发点：隐藏上侧线条 */
+.single-shift-seq-wrap.shift-start-stop .shift-seq-line:first-child {
+    display: none !important;
+}
+
+/* 终点：隐藏下侧线条 */
+.single-shift-seq-wrap.shift-end-stop .shift-seq-line:last-child {
+    display: none !important;
+}
+
+/* 非起点/终点停靠班次：圆形样式 */
+.single-shift-seq-wrap.seq-wrap-middle-stop:not(.shift-start-end-stop) .shift-seq-text {
+  border-radius: 50% !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 /* 6. 分页控件 */
@@ -936,53 +993,6 @@ body {
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
-}
-
-/* 核心样式：班次始发点+终点 - 圆形+班次原色背景+纯白色文字（使用CSS变量，无歧义） */
-.single-shift-seq-wrap.shift-start-end-stop .shift-seq-text {
-  background-color: var(--shift-color) !important; /* 使用CSS变量，精准取班次原色 */
-  color: #ffffff !important; /* 强制纯白色文字，优先级最高 */
-  font-weight: bold;
-  border: none !important;
-  border-radius: 50% !important; /* 圆形样式 */
-  width: 24px !important; /* 固定宽高，确保圆形规整 */
-  height: 24px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* 始发点：隐藏上侧线条 */
-.single-shift-seq-wrap.shift-start-stop .shift-seq-line:first-child {
-    display: none !important;
-}
-
-/* 终点：隐藏下侧线条 */
-.single-shift-seq-wrap.shift-end-stop .shift-seq-line:last-child {
-    display: none !important;
-}
-
-/* 移除原有不停靠班次的隐藏样式（关键修改：不再隐藏，改为虚线显示） */
-/* 注释/删除原有隐藏代码，保留样式不隐藏 */
-/* .single-shift-seq-wrap.seq-wrap-middle-no-stop {
-    content: "";
-    display: none !important;
-} */
-
-/* .single-shift-seq-wrap.seq-wrap-middle-no-stop .shift-seq-text,
-.single-shift-seq-wrap.seq-wrap-middle-no-stop .shift-seq-line {
-    content: "";
-    display: none !important;
-} */
-
-/* 非起点/终点停靠班次：圆形样式，视觉统一 */
-.single-shift-seq-wrap.seq-wrap-middle-stop:not(.shift-start-end-stop) .shift-seq-text {
-  border-radius: 50% !important;
-  width: 24px !important;
-  height: 24px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
 }
 
 /* 响应式适配 */
