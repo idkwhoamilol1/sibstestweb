@@ -82,6 +82,15 @@ const DataHandler = {
         return stop.seq === lastShiftStop.seq;
     },
 
+    // 判断站点是否在某班次的停靠范围内（排除起点前/终点后站点）
+    isStopInShiftRange(routeItem, stop, shiftKey) {
+        const shiftStops = this.getShiftStopStops(routeItem, shiftKey);
+        if (shiftStops.length === 0) return false;
+        const minSeq = shiftStops[0].seq;
+        const maxSeq = shiftStops[shiftStops.length - 1].seq;
+        return stop.seq >= minSeq && stop.seq <= maxSeq;
+    },
+
     // 核心：特殊班次序号重排（普通班次返回全局序号，特殊班次返回本地序号从1开始）
     getShiftLocalSeq(routeItem, stop, shiftKey) {
         // 普通班次（normal）：保留全局原始序号
@@ -162,7 +171,7 @@ const DataHandler = {
     }
 };
 
-// ------------- 第三步：DOM渲染层（保留样式绑定 + 序号重排调用，新增X标记逻辑）-------------
+// ------------- 第三步：DOM渲染层（保留样式绑定 + 序号重排调用，修复站点异常显示）-------------
 const Renderer = {
     // 渲染线路信息栏
     renderRouteInfo() {
@@ -309,20 +318,27 @@ const Renderer = {
         return tableHtml;
     },
 
-    // 核心：创建班次停靠状态（绑定样式 + 调用特殊班次序号重排，新增X标记）
+    // 核心：创建班次停靠状态（修复起点前/终点后站点异常显示）
     createShiftSeq(stop) {
         let seqHtml = "";
         const currentRouteItem = CONFIG.currentRouteData; // 当前线路数据
 
         CONFIG.enabledShifts.forEach(shift => {
-            // 1. 严格判断：站点是否停靠该班次
+            // 1. 严格判断：站点是否在该班次停靠范围内（排除起点前/终点后）
+            const isInShiftRange = DataHandler.isStopInShiftRange(currentRouteItem, stop, shift);
+            // 2. 严格判断：站点是否停靠该班次
             const isStop = !!stop.stopFor && stop.stopFor.includes(shift);
-            // 2. 判断：是否为该班次始发点
+            // 3. 判断：是否为该班次始发点
             const isShiftStartStop = DataHandler.isShiftStartStop(currentRouteItem, stop, shift);
-            // 3. 判断：是否为该班次终点
+            // 4. 判断：是否为该班次终点
             const isShiftEndStop = DataHandler.isShiftEndStop(currentRouteItem, stop, shift);
             
-            // 4. 动态拼接类名（区分停靠/不停靠 + 始发/终点）
+            // 非停靠范围内的站点，直接跳过渲染
+            if (!isInShiftRange) {
+                return;
+            }
+
+            // 5. 动态拼接类名（区分停靠/不停靠 + 始发/终点）
             let seqWrapClassBase = isStop 
                 ? "single-shift-seq-wrap seq-wrap-middle-stop" 
                 : "single-shift-seq-wrap seq-wrap-middle-no-stop"; // 不停靠班次绑定专属类名
@@ -339,18 +355,18 @@ const Renderer = {
             if (isShiftEndStop) {
                 seqWrapClassBase = `${seqWrapClassBase} shift-end-stop`;
             }
-            const seqWrapClass = seqWrapClassBase;
+            const seqWrapClass = `${seqWrapClassBase} line-${shift}`;
             
-            // 5. 调用序号重排方法：普通班次全局序号，特殊班次本地序号（从1开始）
-            const seqText = isStop ? DataHandler.getShiftLocalSeq(currentRouteItem, stop, shift) : "not stop"; // 核心修改：不停靠时显示X
-            // 6. 新增：为不停靠班次的文本容器添加专属类（用于样式控制）
+            // 6. 调用序号重排方法：普通班次全局序号，特殊班次本地序号（从1开始）
+            const seqText = isStop ? DataHandler.getShiftLocalSeq(currentRouteItem, stop, shift) : "";
+            // 7. 新增：为不停靠班次的文本容器添加专属类（用于样式控制）
             const seqTextClass = isStop ? "shift-seq-text" : "shift-seq-text no-stop-x"; // 不停靠时添加no-stop-x类
             
-            // 7. 拼接HTML，渲染班次状态（线条/背景样式由CSS控制）
+            // 8. 拼接HTML，渲染班次状态（线条/背景样式由CSS控制）
             seqHtml += `
-                <div class="${seqWrapClass} line-${shift}">
+                <div class="${seqWrapClass}">
                     <div class="shift-seq-line"></div> <!-- 上侧线条：停靠实线/不停靠虚线 -->
-                    <div class="${seqTextClass}">${seqText}</div> <!-- 序号：停靠显示序号/不停靠显示X -->
+                    <div class="${seqTextClass}">${seqText}</div> <!-- 序号：停靠显示序号/不停靠隐藏 -->
                     <div class="shift-seq-line"></div> <!-- 下侧线条：停靠实线/不停靠虚线 -->
                 </div>
             `;
@@ -445,7 +461,7 @@ const Renderer = {
     }
 };
 
-// ------------- 第四步：事件绑定层（无修改，保持原有逻辑）-------------
+// ------------- 第四步：事件绑定层（修复键盘拖拽失效）-------------
 const EventBinder = {
     // 初始化所有事件
     initAllEvents() {
@@ -564,8 +580,8 @@ const EventBinder = {
 
         // 上一页
         prevPageBtn.addEventListener("click", () => {
-            if (CONFIG.currentPage <= 1) return;
-            CONFIG.currentPage--;
+            if (CONFIG.currentPage <= 1)                 return;
+            CONFIG.currentPage -= 1;
             Renderer.renderStops();
         });
 
@@ -574,11 +590,11 @@ const EventBinder = {
             const validStops = DataHandler.getValidStops(CONFIG.currentRouteData);
             const totalPages = DataHandler.getTotalPages(validStops);
             if (CONFIG.currentPage >= totalPages) return;
-            CONFIG.currentPage++;
+            CONFIG.currentPage += 1;
             Renderer.renderStops();
         });
 
-        // 尾页
+        // 末页
         lastPageBtn.addEventListener("click", () => {
             const validStops = DataHandler.getValidStops(CONFIG.currentRouteData);
             const totalPages = DataHandler.getTotalPages(validStops);
@@ -588,49 +604,64 @@ const EventBinder = {
         });
     },
 
-    // 绑定虚拟键盘事件
+    // 绑定虚拟键盘按键事件
     bindKeyboardEvents() {
         const input = document.getElementById("routeNumberInput");
-        const numKeys = document.querySelectorAll(".main-num-key");
-        const letterKeys = document.querySelectorAll(".sub-letter-btn");
-        const confirmBtn = document.getElementById("keyboardConfirmBtn");
+        const keyboardBtns = document.querySelectorAll(".main-num-key, .sub-letter-btn");
         const deleteBtn = document.getElementById("keyboardDeleteBtn");
         const clearBtn = document.getElementById("keyboardClearBtn");
+        const confirmBtn = document.getElementById("keyboardConfirmBtn");
 
-        // 数字键
-        numKeys.forEach(key => {
-            key.addEventListener("click", () => {
-                if (key.disabled) return;
-                const keyValue = key.getAttribute("data-key");
-                input.value += keyValue;
-                CONFIG.currentRouteNum = input.value.trim().toUpperCase();
+        // 数字/字母按键事件
+        keyboardBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (btn.disabled) return;
+                const keyValue = btn.getAttribute("data-key");
+                input.value = (input.value || "") + keyValue;
+                // 同步更新全局路由编号并刷新按键状态
+                const inputValue = input.value.trim().toUpperCase();
+                CONFIG.currentRouteNum = inputValue;
                 Renderer.updateKeyboardBtnStatus();
+                // 保持输入框聚焦
+                input.focus();
             });
         });
 
-        // 字母键
-        letterKeys.forEach(key => {
-            key.addEventListener("click", () => {
-                if (key.disabled) return;
-                const keyValue = key.getAttribute("data-key");
-                input.value += keyValue;
-                CONFIG.currentRouteNum = input.value.trim().toUpperCase();
-                Renderer.updateKeyboardBtnStatus();
-            });
+        // 删除键事件
+        deleteBtn.addEventListener("click", () => {
+            const currentValue = input.value || "";
+            input.value = currentValue.slice(0, currentValue.length - 1);
+            // 同步更新全局路由编号并刷新按键状态
+            const inputValue = input.value.trim().toUpperCase();
+            CONFIG.currentRouteNum = inputValue;
+            Renderer.updateKeyboardBtnStatus();
+            // 保持输入框聚焦
+            input.focus();
         });
 
-        // 确认键
+        // 清空键事件
+        clearBtn.addEventListener("click", () => {
+            input.value = "";
+            // 同步更新全局路由编号并刷新按键状态
+            CONFIG.currentRouteNum = "";
+            Renderer.updateKeyboardBtnStatus();
+            // 重置方向按钮激活状态
+            this.resetDirectionBtnActive();
+            // 隐藏线路信息和站点
+            Renderer.hideRouteInfo();
+            Renderer.showStopEmptyTip("请先选择公交线路查看站点信息");
+            // 保持输入框聚焦
+            input.focus();
+        });
+
+        // 确认键事件
         confirmBtn.addEventListener("click", () => {
             const routeNum = CONFIG.currentRouteNum;
-            if (!routeNum) {
-                alert("请先输入线路编号！");
+            if (!routeNum || !DataHandler.isRouteExist(routeNum)) {
+                alert("请输入有效的线路编号！");
                 return;
             }
-            if (!DataHandler.isRouteExist(routeNum)) {
-                alert("输入的线路编号不存在，请重新输入！");
-                return;
-            }
-            // 自动激活A方向按钮（默认去程）
+            // 自动激活A方向按钮（默认）
             const directionABtn = document.querySelector('.direction-btn[data-dir="A"]');
             if (directionABtn) {
                 directionABtn.click();
@@ -638,109 +669,80 @@ const EventBinder = {
             // 隐藏线路选择面板
             document.getElementById("routeSelectPanel").classList.add("hidden");
         });
-
-        // 删除键（退格）
-        deleteBtn.addEventListener("click", () => {
-            input.value = input.value.slice(0, -1);
-            CONFIG.currentRouteNum = input.value.trim().toUpperCase();
-            Renderer.updateKeyboardBtnStatus();
-        });
-
-        // 清空键
-        clearBtn.addEventListener("click", () => {
-            input.value = "";
-            CONFIG.currentRouteNum = "";
-            this.resetDirectionBtnActive();
-            Renderer.hideRouteInfo();
-            Renderer.showStopEmptyTip("请先选择公交线路查看站点信息");
-            Renderer.updateKeyboardBtnStatus();
-        });
     },
 
-    // 绑定虚拟键盘拖拽事件（可选，优化移动端体验）
+    // 修复：键盘拖拽功能（核心：修正选择器 + 完善拖拽逻辑）
     bindKeyboardDragEvent() {
         const keyboard = document.getElementById("customKeyboard");
+        const dragHandle = document.getElementById("keyboardDragHandle"); // 修正选择器，对应HTML的id
         let isDragging = false;
-        let startX = 0;
-        let startY = 0;
-        let originalX = 0;
-        let originalY = 0;
+        let offsetX = 0;
+        let offsetY = 0;
 
-        // 鼠标按下（开始拖拽）
-        keyboard.addEventListener("mousedown", (e) => {
-            // 仅在键盘头部拖拽（避免触发按键点击）
-            if (e.target.closest(".keyboard-header")) {
-                isDragging = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                originalX = keyboard.offsetLeft;
-                originalY = keyboard.offsetTop;
-                keyboard.style.cursor = "move";
-            }
+        // 鼠标按下：开始拖拽
+        dragHandle.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            // 获取鼠标相对于键盘的偏移量（避免拖拽时跳动）
+            const keyboardRect = keyboard.getBoundingClientRect();
+            offsetX = e.clientX - keyboardRect.left;
+            offsetY = e.clientY - keyboardRect.top;
+            // 添加拖拽样式
+            dragHandle.style.cursor = "grabbing";
+            keyboard.style.userSelect = "none"; // 拖拽时禁止文本选择
+            keyboard.style.zIndex = "1001"; // 拖拽时置顶
         });
 
-        // 鼠标移动（执行拖拽）
+        // 鼠标移动：执行拖拽
         document.addEventListener("mousemove", (e) => {
             if (!isDragging) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            keyboard.style.left = `${originalX + dx}px`;
-            keyboard.style.top = `${originalY + dy}px`;
+            // 计算键盘新位置（基于鼠标位置 - 偏移量）
+            const newLeft = e.clientX - offsetX;
+            const newTop = e.clientY - offsetY;
+            // 设置键盘位置（限制在可视区域内，避免超出屏幕）
+            keyboard.style.left = `${Math.max(0, Math.min(newLeft, window.innerWidth - keyboard.offsetWidth))}px`;
+            keyboard.style.top = `${Math.max(0, Math.min(newTop, window.innerHeight - keyboard.offsetHeight))}px`;
         });
 
-        // 鼠标松开（结束拖拽）
+        // 鼠标松开：结束拖拽
         document.addEventListener("mouseup", () => {
+            if (!isDragging) return;
+            isDragging = false;
+            // 恢复样式
+            dragHandle.style.cursor = "move";
+            keyboard.style.userSelect = "auto";
+            keyboard.style.zIndex = "1000";
+        });
+
+        // 鼠标离开文档：强制结束拖拽（兼容边界情况）
+        document.addEventListener("mouseleave", () => {
             if (isDragging) {
                 isDragging = false;
-                keyboard.style.cursor = "default";
+                dragHandle.style.cursor = "move";
+                keyboard.style.userSelect = "auto";
+                keyboard.style.zIndex = "1000";
             }
-        });
-
-        // 移动端触摸事件兼容
-        keyboard.addEventListener("touchstart", (e) => {
-            if (e.target.closest(".keyboard-header")) {
-                isDragging = true;
-                const touch = e.touches[0];
-                startX = touch.clientX;
-                startY = touch.clientY;
-                originalX = keyboard.offsetLeft;
-                originalY = keyboard.offsetTop;
-            }
-        });
-
-        document.addEventListener("touchmove", (e) => {
-            if (!isDragging) return;
-            const touch = e.touches[0];
-            const dx = touch.clientX - startX;
-            const dy = touch.clientY - startY;
-            keyboard.style.left = `${originalX + dx}px`;
-            keyboard.style.top = `${originalY + dy}px`;
-            e.preventDefault(); // 阻止页面滚动
-        });
-
-        document.addEventListener("touchend", () => {
-            isDragging = false;
         });
     },
 
     // 重置方向按钮激活状态
     resetDirectionBtnActive() {
         const directionBtns = document.querySelectorAll(".direction-btn");
-        directionBtns.forEach(btn => btn.classList.remove("active"));
+        directionBtns.forEach(btn => {
+            btn.classList.remove("active");
+        });
     },
 
-    // 加载线路数据并渲染核心内容
+    // 加载线路数据并渲染
     loadRouteData(routeNum) {
-        // 获取线路详情
         const routeItem = DataHandler.getRouteByNum(routeNum);
         if (!routeItem) {
-            alert("线路数据加载失败！");
+            alert("线路数据加载失败，请重试！");
             return;
         }
         // 更新全局线路数据和启用班次
         CONFIG.currentRouteData = routeItem;
         CONFIG.enabledShifts = DataHandler.getEnabledShifts(routeItem);
-        // 重置当前页码（切换线路后默认回到第一页）
+        // 重置当前页码
         CONFIG.currentPage = 1;
         // 渲染线路信息和站点
         Renderer.renderRouteInfo();
@@ -748,9 +750,9 @@ const EventBinder = {
     }
 };
 
-// ------------- 第五步：初始化入口 -------------
-// 页面加载完成后初始化所有事件
+// ------------- 第五步：初始化（页面加载完成后执行）-------------
 document.addEventListener("DOMContentLoaded", () => {
+    // 初始化所有事件
     EventBinder.initAllEvents();
     // 初始显示站点空提示
     Renderer.showStopEmptyTip("请先选择公交线路查看站点信息");
