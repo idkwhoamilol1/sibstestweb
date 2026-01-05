@@ -633,6 +633,11 @@ body {
     gap: 0;
 }
 
+/* 隐藏非当前班次的站点序号容器 */
+.single-shift-seq-wrap.shift-out-of-range {
+    display: none !important;
+}
+
 .shift-seq-text {
     width: 40px;
     height: 40px;
