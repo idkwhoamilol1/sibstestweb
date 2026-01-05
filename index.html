@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>线路站点查询</title>
+    <!-- 引入CSS样式 -->
+    <link rel="stylesheet" href="/sibstestweb/pScreen.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 1. 线路选择按钮 -->
+        <button class="btn open-select-btn" id="openRouteSelectBtn">
+            <span>📋 选择公交线路</span>
+        </button>
+
+        <!-- 2. 线路选择面板 -->
+        <div class="route-select-panel" id="routeSelectPanel">
+            <div class="select-wrap">
+                <div class="input-box">
+                    <label for="routeNumberInput">线路编号</label>
+                    <input type="text" id="routeNumberInput" placeholder="请输入线路编号（如101）">
+                </div>
+            </div>
+            <div class="direction-box">
+                <label>行驶方向</label>
+                <div class="direction-btn-group" id="directionBtnGroup">
+                    <button class="direction-btn" data-dir="A">去程</button>
+                    <button class="direction-btn" data-dir="B">回程</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 线路信息栏 -->
+        <div class="route-info-bar hidden" id="routeInfoBar">
+            <div class="route-basic-info">
+                <div class="route-num-color-wrap">
+                    <div class="route-color-block" id="routeColorBlock"></div>
+                    <div class="route-num" id="routeNumText"></div>
+                </div>
+                <div class="route-shift-tags" id="routeShiftTags"></div>
+            </div>
+            <div class="route-dest-container">
+                <div class="dest-cn">
+                    <span class="label">目的地：</span>
+                    <span id="destCnText"></span>
+                </div>
+                <div class="dest-en">
+                    <span class="label">English：</span>
+                    <span id="destEnText"></span>
+                </div>
+                <div class="dest-dir">
+                    <span class="label">行驶方向：</span>
+                    <span id="dirText"></span>
+                </div>
+            </div>
+            <button class="btn timetable-btn" id="timetableBtn">
+                <span>📅 查看时间表</span>
+            </button>
+        </div>
+
+        <!-- 4. 时间表面板 -->
+        <div class="timetable-panel hidden" id="timetablePanel">
+            <div class="timetable-header">
+                <h3 id="timetableTitle">线路时间表</h3>
+                <button class="close-timetable-btn" id="closeTimetableBtn">×</button>
+            </div>
+            <div class="timetable-content" id="timetableContent"></div>
+        </div>
+
+        <!-- 5. 站点展示容器（左右分栏） -->
+        <div class="stop-wrap" id="stopWrap">
+            <div class="empty-tip" id="stopEmptyTip">
+                请先选择公交线路查看站点信息
+            </div>
+            <div class="stop-column hidden" id="leftStopColumn"></div>
+            <div class="stop-column hidden" id="rightStopColumn"></div>
+        </div>
+
+        <!-- 6. 分页控件 -->
+        <div class="pagination-control hidden" id="paginationControl">
+            <button class="page-btn" id="firstPageBtn">首页</button>
+            <button class="page-btn" id="prevPageBtn">上一页</button>
+            <div class="page-info">
+                第<span id="currentPageText">1</span>/<span id="totalPageText">1</span>页
+            </div>
+            <button class="page-btn" id="nextPageBtn">下一页</button>
+            <button class="page-btn" id="lastPageBtn">尾页</button>
+        </div>
+
+        <!-- 7. 虚拟键盘 -->
+        <div class="custom-keyboard hidden" id="customKeyboard">
+            <div class="keyboard-drag-handle" id="keyboardDragHandle">
+                <div class="keyboard-title">数字键盘（可拖动）</div>
+            </div>
+            <div class="keyboard-grid">
+                <div class="key-group">
+                    <button class="main-num-key" data-key="1">1</button>
+                    <div class="key-sub-wrap">
+                        <button class="sub-letter-btn" data-key="A">A</button>
+                        <button class="sub-letter-btn" data-key="B">B</button>
+                        <button class="sub-letter-btn" data-key="C">C</button>
+                    </div>
+                </div>
+                <div class="key-group">
+                    <button class="main-num-key" data-key="2">2</button>
+                    <div class="key-sub-wrap">
+                        <button class="sub-letter-btn" data-key="D">D</button>
+                        <button class="sub-letter-btn" data-key="E">E</button>
+                        <button class="sub-letter-btn" data-key="F">F</button>
+                    </div>
+                </div>
+                <div class="key-group">
+                    <button class="main-num-key" data-key="3">3</button>
+                    <div class="key-sub-wrap">
+                        <button class="sub-letter-btn" data-key="G">G</button>
+                        <button class="sub-letter-btn" data-key="H">H</button>
+                        <button class="sub-letter-btn" data-key="I">I</button>
+                    </div>
+                </div>
+                <div class="key-group">
+                    <button class="main-num-key" data-key="4">4</button>
+                    <div class="key-sub-wrap">
+                        <button class="sub-letter-btn" data-key="J">J</button>
+                        <button class="sub-letter-btn" data-key="K">K</button>
+                        <button class="sub-letter-btn" data-key="L">L</button>
+                    </div>
+                </div>
+                <div class="key-group">
+                    <button class="main-num-key" data-key="5">5</button>
+                    <div class="key-sub-wrap">
+                        <button class="sub-letter-btn" data-key="M">M</button>
+                        <button class="sub-letter-btn" data-key="N">N</button>
+                        <button class="sub-letter-btn" data-key="O">O</button>
+                    </div>
+                </div>
+                <div class="key-group">
+                    <button class="main-num-key" data-key="6">6</button>
+                    <div class="key-sub-wrap">
+                        <button class="sub-letter-btn" data-key="P">P</button>
+                        <button class="sub-letter-btn" data-key="Q">Q</button>
+                        <button class="sub-letter-btn" data-key="R">R</button>
+                    </div>
+                </div>
+                <div class="key-group">
+                    <button class="main-num-key" data-key="7">7</button>
+                    <div class="key-sub-wrap">
+                        <button class="sub-letter-btn" data-key="S">S</button>
+                        <button class="sub-letter-btn" data-key="T">T</button>
+                        <button class="sub-letter-btn" data-key="U">U</button>
+                    </div>
+                </div>
+                <div class="key-group">
+                    <button class="main-num-key" data-key="8">8</button>
+                    <div class="key-sub-wrap">
+                        <button class="sub-letter-btn" data-key="V">V</button>
+                        <button class="sub-letter-btn" data-key="W">W</button>
+                        <button class="sub-letter-btn" data-key="X">X</button>
+                    </div>
+                </div>
+                <div class="key-group">
+                    <button class="main-num-key" data-key="9">9</button>
+                    <div class="key-sub-wrap">
+                        <button class="sub-letter-btn" data-key="Y">Y</button>
+                        <button class="sub-letter-btn" data-key="Z">Z</button>
+                        <button class="empty-sub-btn"></button>
+                    </div>
+                </div>
+                <div class="key-group-empty"></div>
+                <div class="key-group">
+                    <button class="main-num-key" data-key="0">0</button>
+                    <div class="empty-sub-wrap"></div>
+                </div>
+                <div class="key-group-empty"></div>
+            </div>
+            <div class="keyboard-func-group">
+                <button class="func-key confirm-key" id="keyboardConfirmBtn">确认</button>
+                <button class="func-key delete-key" id="keyboardDeleteBtn">删除</button>
+                <button class="func-key clear-key" id="keyboardClearBtn">清空</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入数据和JS逻辑 -->
+    <script src="routeData.js"></script>
+    <script src="pScreen.js"></script>
+</body>
+</html>
