@@ -2,179 +2,237 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公交线路站点查询</title>
-    <link rel="stylesheet" href="/sibstestweb/pScreen.css">
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SIBS Routes Checker</title>
+    <link rel="stylesheet" href="/sibstestweb/style.css">
+</head> <!---->
 <body>
-    <div class="container">
-        <!-- 1. 线路选择按钮 -->
-        <button id="openRouteSelectBtn" class="btn open-select-btn">
-            <span>选择公交线路</span>
-        </button>
-
-        <!-- 2. 线路选择面板 -->
-        <div id="routeSelectPanel" class="route-select-panel hidden">
-            <div class="select-wrap">
-                <div class="input-box">
-                    <label for="routeNumberInput">输入线路编号</label>
-                    <input type="text" id="routeNumberInput" placeholder="例如：101、202">
-                </div>
-            </div>
-            <div class="direction-box">
-                <label>选择行驶方向</label>
-                <div class="direction-btn-group">
-                    <button class="direction-btn" data-dir="A">A方向（去程）</button>
-                    <button class="direction-btn" data-dir="B">B方向（回程）</button>
-                </div>
+    <div id="loadingScreen" class="screen loading-screen">
+        <div class="loading-container">
+            <h1 class="loading-title">Sunshine Islands Bus Simulator - BETA</h1>
+            <div class="loading-img-wrap">
+                <img src="/sibstestweb/loading.png" alt="" class="loading-img">
             </div>
         </div>
-
-        <!-- 3. 线路信息栏 -->
-        <div id="routeInfoBar" class="route-info-bar hidden">
-            <div class="route-basic-info">
-                <div class="route-num-color-wrap">
-                    <div id="routeColorBlock" class="route-color-block"></div>
-                    <div id="routeNumText" class="route-num"></div>
-                </div>
-                <div id="routeShiftTags" class="route-shift-tags"></div>
-            </div>
-            <div class="route-dest-container">
-                <div class="dest-cn">
-                    <span class="label">目的地：</span>
-                    <span id="destCnText"></span>
-                </div>
-                <div class="dest-en" id="destEnText"></div>
-                <div class="dest-dir">
-                    <span class="label">行驶方向：</span>
-                    <span id="dirText"></span>
-                </div>
-            </div>
-            <button id="timetableBtn" class="btn timetable-btn">
-                <span>查看运营时间</span>
-            </button>
-        </div>
-
-        <!-- 4. 时间表面板 -->
-        <div id="timetablePanel" class="timetable-panel hidden">
-            <div class="timetable-header">
-                <h3 id="timetableTitle"></h3>
-                <button id="closeTimetableBtn" class="close-timetable-btn">×</button>
-            </div>
-            <div id="timetableContent" class="timetable-content"></div>
-        </div>
-
-        <!-- 5. 站点展示容器 -->
-        <div class="stop-wrap">
-            <div id="stopEmptyTip" class="empty-tip hidden"></div>
-            <div id="leftStopColumn" class="stop-column hidden"></div>
-            <div id="rightStopColumn" class="stop-column hidden"></div>
-        </div>
-
-        <!-- 6. 分页控件 -->
-        <div id="paginationControl" class="pagination-control hidden">
-            <button id="firstPageBtn" class="btn page-btn">首页</button>
-            <button id="prevPageBtn" class="btn page-btn">上一页</button>
-            <div class="page-info">
-                第 <span id="currentPageText">1</span> 页 / 共 <span id="totalPageText">1</span> 页
-            </div>
-            <button id="nextPageBtn" class="btn page-btn">下一页</button>
-            <button id="lastPageBtn" class="btn page-btn">末页</button>
-        </div>
+        <div class="page-id-label">BETA WEBSITE</div>
     </div>
 
-    <!-- 虚拟键盘 -->
-    <div id="customKeyboard" class="custom-keyboard hidden">
-        <div id="keyboardDragHandle" class="keyboard-drag-handle">
-            <div class="keyboard-title">拖拽移动 | 数字字母键盘</div>
+    <div id="funcScreen" class="screen func-screen hidden">
+        <button id="backToLoadingBtn" class="back-btn app-back-btn hidden">返回</button>
+        
+        <div class="app-header">
+            <h1 class="app-title">Choose :D</h1>
+            <div class="app-version">v2.0.0</div>
         </div>
-        <div class="keyboard-grid">
-            <div class="key-group">
-                <button class="main-num-key" data-key="1">1</button>
-                <div class="key-sub-wrap">
-                    <button class="sub-letter-btn" data-key="A">A</button>
-                    <button class="sub-letter-btn" data-key="B">B</button>
-                    <button class="sub-letter-btn" data-key="C">C</button>
+        
+        <div class="app-content func-content">
+            <div class="func-card-container">
+                <div id="routeSelectFunc" class="func-card app-card">
+                    <div class="func-card-icon">🚌</div>
+                    <div class="func-card-content">
+                        <h3 class="func-card-title">Routes checker</h3>
+                        <p class="func-card-desc"></p>
+                    </div>
+                    <div class="func-card-arrow">→</div>
+                </div>
+                
+                <div id="updateLogFunc" class="func-card app-card">
+                    <div class="func-card-icon">📝</div>
+                    <div class="func-card-content">
+                        <h3 class="func-card-title">Update Logs</h3>
+                        <p class="func-card-desc"></p>
+                    </div>
+                    <div class="func-card-arrow">→</div>
                 </div>
             </div>
-            <div class="key-group">
-                <button class="main-num-key" data-key="2">2</button>
-                <div class="key-sub-wrap">
-                    <button class="sub-letter-btn" data-key="D">D</button>
-                    <button class="sub-letter-btn" data-key="E">E</button>
-                    <button class="sub-letter-btn" data-key="F">F</button>
+            
+            <div id="updateLogPanel" class="update-log-panel app-card hidden">
+                <div class="log-header">
+                    <h3 class="log-title" id="logTitle">This title</h3>
+                    <button id="closeLogBtn" class="close-log-btn">×</button>
+                </div>
+                <div class="log-meta">
+                    <span class="log-version" id="logVersion">v2.0.0</span>
+                    <span class="log-time" id="logTime">2026-01-06</span>
+                </div>
+                <div class="log-list" id="logList">
                 </div>
             </div>
-            <div class="key-group">
-                <button class="main-num-key" data-key="3">3</button>
-                <div class="key-sub-wrap">
-                    <button class="sub-letter-btn" data-key="G">G</button>
-                    <button class="sub-letter-btn" data-key="H">H</button>
-                    <button class="sub-letter-btn" data-key="I">I</button>
-                </div>
-            </div>
-            <div class="key-group">
-                <button class="main-num-key" data-key="4">4</button>
-                <div class="key-sub-wrap">
-                    <button class="sub-letter-btn" data-key="J">J</button>
-                    <button class="sub-letter-btn" data-key="K">K</button>
-                    <button class="sub-letter-btn" data-key="L">L</button>
-                </div>
-            </div>
-            <div class="key-group">
-                <button class="main-num-key" data-key="5">5</button>
-                <div class="key-sub-wrap">
-                    <button class="sub-letter-btn" data-key="M">M</button>
-                    <button class="sub-letter-btn" data-key="N">N</button>
-                    <button class="sub-letter-btn" data-key="O">O</button>
-                </div>
-            </div>
-            <div class="key-group">
-                <button class="main-num-key" data-key="6">6</button>
-                <div class="key-sub-wrap">
-                    <button class="sub-letter-btn" data-key="P">P</button>
-                    <button class="sub-letter-btn" data-key="Q">Q</button>
-                    <button class="sub-letter-btn" data-key="R">R</button>
-                </div>
-            </div>
-            <div class="key-group">
-                <button class="main-num-key" data-key="7">7</button>
-                <div class="key-sub-wrap">
-                    <button class="sub-letter-btn" data-key="S">S</button>
-                    <button class="sub-letter-btn" data-key="T">T</button>
-                    <button class="sub-letter-btn" data-key="U">U</button>
-                </div>
-            </div>
-            <div class="key-group">
-                <button class="main-num-key" data-key="8">8</button>
-                <div class="key-sub-wrap">
-                    <button class="sub-letter-btn" data-key="V">V</button>
-                    <button class="sub-letter-btn" data-key="W">W</button>
-                    <button class="sub-letter-btn" data-key="X">X</button>
-                </div>
-            </div>
-            <div class="key-group">
-                <button class="main-num-key" data-key="9">9</button>
-                <div class="key-sub-wrap">
-                    <button class="sub-letter-btn" data-key="Y">Y</button>
-                    <button class="sub-letter-btn" data-key="Z">Z</button>
-                    <div class="empty-sub-btn"></div>
-                </div>
-            </div>
-            <div class="key-group-empty"></div>
-            <div class="key-group">
-                <button class="main-num-key" data-key="0">0</button>
-                <div class="empty-sub-wrap"></div>
-            </div>
-            <div class="key-group-empty"></div>
         </div>
-        <div class="keyboard-func-group">
-            <button id="keyboardDeleteBtn" class="func-key delete-key">删除</button>
-            <button id="keyboardClearBtn" class="func-key clear-key">清空</button>
-            <button id="keyboardConfirmBtn" class="func-key confirm-key">确认</button>
-        </div>
+        <div class="page-id-label">BETA WEBSITE</div>
     </div>
-    <script src="routedata.js"></script>
-    <script src="pScreen.js"></script>
+
+    <div id="inputScreen" class="screen input-screen hidden">
+        <button id="backToFuncBtn" class="back-btn app-back-btn">返回</button>
+        
+        <div class="app-header">
+            <h1 class="app-title">线路编号输入</h1>
+        </div>
+        
+        <div class="app-content input-content">
+            <div class="input-keyboard-suggest-wrap">
+                <!-- 输入+键盘容器 -->
+                <div class="input-keyboard-wrap">
+                    <div class="input-container">
+                        <div class="input-title-wrap">
+                            <h2 class="input-title">请输入线路编号</h2>
+                            <div class="input-box">
+                                <div class="input-field-wrap">
+                                    <label for="routeNumberInput">线路编号</label>
+                                    <input type="text" id="routeNumberInput" class="custom-input" readonly placeholder="点击输入线路编号" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自定义键盘（默认显示） -->
+                    <div id="customKeyboard" class="custom-keyboard">
+                        <div class="keyboard-grid">
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="1">1</button>
+                                <div class="key-sub-wrap">
+                                    <button class="sub-letter-btn" data-key="A">A</button>
+                                    <button class="sub-letter-btn" data-key="B">B</button>
+                                    <button class="sub-letter-btn" data-key="C">C</button>
+                                </div>
+                            </div>
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="2">2</button>
+                                <div class="key-sub-wrap">
+                                    <button class="sub-letter-btn" data-key="D">D</button>
+                                    <button class="sub-letter-btn" data-key="E">E</button>
+                                    <button class="sub-letter-btn" data-key="F">F</button>
+                                </div>
+                            </div>
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="3">3</button>
+                                <div class="key-sub-wrap">
+                                    <button class="sub-letter-btn" data-key="G">G</button>
+                                    <button class="sub-letter-btn" data-key="H">H</button>
+                                    <button class="sub-letter-btn" data-key="I">I</button>
+                                </div>
+                            </div>
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="4">4</button>
+                                <div class="key-sub-wrap">
+                                    <button class="sub-letter-btn" data-key="J">J</button>
+                                    <button class="sub-letter-btn" data-key="K">K</button>
+                                    <button class="sub-letter-btn" data-key="L">L</button>
+                                </div>
+                            </div>
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="5">5</button>
+                                <div class="key-sub-wrap">
+                                    <button class="sub-letter-btn" data-key="M">M</button>
+                                    <button class="sub-letter-btn" data-key="N">N</button>
+                                    <button class="sub-letter-btn" data-key="O">O</button>
+                                </div>
+                            </div>
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="6">6</button>
+                                <div class="key-sub-wrap">
+                                    <button class="sub-letter-btn" data-key="P">P</button>
+                                    <button class="sub-letter-btn" data-key="Q">Q</button>
+                                    <button class="sub-letter-btn" data-key="R">R</button>
+                                </div>
+                            </div>
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="7">7</button>
+                                <div class="key-sub-wrap">
+                                    <button class="sub-letter-btn" data-key="S">S</button>
+                                    <button class="sub-letter-btn" data-key="T">T</button>
+                                    <button class="sub-letter-btn" data-key="U">U</button>
+                                </div>
+                            </div>
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="8">8</button>
+                                <div class="key-sub-wrap">
+                                    <button class="sub-letter-btn" data-key="V">V</button>
+                                    <button class="sub-letter-btn" data-key="W">W</button>
+                                    <button class="sub-letter-btn" data-key="X">X</button>
+                                </div>
+                            </div>
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="9">9</button>
+                                <div class="key-sub-wrap">
+                                    <button class="sub-letter-btn" data-key="Y">Y</button>
+                                    <button class="sub-letter-btn" data-key="Z">Z</button>
+                                    <button class="empty-sub-btn"></button>
+                                </div>
+                            </div>
+                            <div class="key-group-empty"></div>
+                            <div class="key-group">
+                                <button class="main-num-key" data-key="0">0</button>
+                                <div class="empty-sub-wrap"></div>
+                            </div>
+                            <div class="key-group-empty"></div>
+                        </div>
+                        <div class="keyboard-func-group">
+                            <button id="keyboardDeleteBtn" class="func-key delete-key">删除</button>
+                            <button id="keyboardClearBtn" class="func-key clear-key">清空</button>
+                            <button id="keyboardConfirmBtn" class="func-key confirm-key">确认</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 线路匹配建议面板 -->
+                <div id="routeSuggestPanel" class="route-suggest-panel">
+                    <div class="suggest-title">匹配的线路</div>
+                    <div id="suggestList" class="suggest-list"></div>
+                </div>
+            </div>
+        </div>
+        <div class="page-id-label">BETA WEBSITE</div>
+    </div>
+
+    <!-- 站点显示画面（App 风格优化） -->
+    <div id="stopScreen" class="screen stop-screen hidden">
+        <!-- 固定左上角返回按钮 -->
+        <button id="backToInputBtn" class="back-btn app-back-btn">返回</button>
+        
+        <!-- App 风格头部 -->
+        <div class="app-header">
+            <h1 class="app-title" id="stopPageTitle">线路站点信息</h1>
+        </div>
+        
+        <!-- 核心内容区 -->
+        <div class="app-content stop-content">
+            <div id="stopContainer" class="stop-container">
+                <!-- 内容由JS动态渲染 -->
+            </div>
+        </div>
+        <div class="page-id-label">BETA WEBSITE</div>
+    </div>
+
+    <script src="/sibstestweb/routedata.js"></script>
+    <script src="/sibstestweb/updatelog.js"></script>
+    <script src="/sibstestweb/script.js"></script>
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 输入框点击唤醒键盘
+            const input = document.getElementById('routeNumberInput');
+            if (input) {
+                input.addEventListener('click', function() {
+                    const keyboard = document.getElementById("customKeyboard");
+                    if (keyboard) {
+                        keyboard.classList.remove("hidden");
+                        // 初始化键盘状态
+                        if (typeof Renderer !== 'undefined') {
+                            Renderer.initKeyboardValidity(input.value);
+                        }
+                    }
+                });
+                
+                // 禁用原生键盘和粘贴
+                input.addEventListener('keydown', function(e) {
+                    e.preventDefault();
+                });
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                });
+            }
+        });
+    </script>
 </body>
 </html>
