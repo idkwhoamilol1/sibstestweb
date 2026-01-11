@@ -3,89 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIBS Routes Checker</title>
-    <link rel="stylesheet" href="/sibstestweb/style.css">
-</head> <!---->
+    <title>陽光群島巴士路綫查詢系統 | Sunshine Islands Bus Route Inquiry System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
+    <!-- 加载画面 -->
     <div id="loadingScreen" class="screen loading-screen">
         <div class="loading-container">
-            <h1 class="loading-title">Sunshine Islands Bus Simulator - BETA</h1>
+            <h1 class="loading-title" data-lang-key="appTitle">陽光群島巴士路綫查詢系統</h1>
             <div class="loading-img-wrap">
-                <img src="/sibstestweb/loading.png" alt="" class="loading-img">
+                <img src="loading.png" alt="加载中" class="loading-img">
             </div>
         </div>
-        <div class="page-id-label">BETA WEBSITE</div>
+        <div class="page-id-label"></div>
     </div>
 
+    <!-- 功能选择画面 -->
     <div id="funcScreen" class="screen func-screen hidden">
-        <button id="backToLoadingBtn" class="back-btn app-back-btn hidden">返回</button>
-        
+        <button id="backToLoadingBtn" class="back-btn app-back-btn hidden" data-lang-key="backBtn">返回</button>
         <div class="app-header">
-            <h1 class="app-title">Choose :D</h1>
-            <div class="app-version">v2.0.0</div>
+            <h1 class="app-title" id="funcTitle" data-lang-key="funcTitle">功能选择</h1>
+            <div class="app-version">v0.3.1</div>
+            <!-- 语言切换按钮（优化UI） -->
+            <div class="lang-switch-wrap">
+                <button id="switchZhBtn" class="lang-btn active" data-lang-key="zhBtn">中文</button>
+                <button id="switchEnBtn" class="lang-btn" data-lang-key="enBtn">English</button>
+            </div>
         </div>
-        
         <div class="app-content func-content">
             <div class="func-card-container">
                 <div id="routeSelectFunc" class="func-card app-card">
                     <div class="func-card-icon">🚌</div>
                     <div class="func-card-content">
-                        <h3 class="func-card-title">Routes checker</h3>
-                        <p class="func-card-desc"></p>
+                        <h3 class="func-card-title" id="routeSelectTitle" data-lang-key="routeSelect">线路站点查询</h3>
+                        <p class="func-card-desc" id="routeSelectDesc" data-lang-key="routeSelectDesc">查询公交线路的站点信息、运营时间</p>
                     </div>
                     <div class="func-card-arrow">→</div>
                 </div>
-                
                 <div id="updateLogFunc" class="func-card app-card">
                     <div class="func-card-icon">📝</div>
                     <div class="func-card-content">
-                        <h3 class="func-card-title">Update Logs</h3>
-                        <p class="func-card-desc"></p>
+                        <h3 class="func-card-title" id="updateLogTitle" data-lang-key="updateLog">更新日志</h3>
+                        <p class="func-card-desc" id="updateLogDesc" data-lang-key="updateLogDesc">查看版本更新内容和优化记录</p>
                     </div>
                     <div class="func-card-arrow">→</div>
                 </div>
             </div>
-            
-            <div id="updateLogPanel" class="update-log-panel app-card hidden">
-                <div class="log-header">
-                    <h3 class="log-title" id="logTitle">This title</h3>
-                    <button id="closeLogBtn" class="close-log-btn">×</button>
-                </div>
-                <div class="log-meta">
-                    <span class="log-version" id="logVersion">v2.0.0</span>
-                    <span class="log-time" id="logTime">2026-01-06</span>
-                </div>
-                <div class="log-list" id="logList">
-                </div>
-            </div>
         </div>
-        <div class="page-id-label">BETA WEBSITE</div>
+        <div class="page-id-label"></div>
     </div>
 
+    <!-- 线路输入画面 -->
     <div id="inputScreen" class="screen input-screen hidden">
-        <button id="backToFuncBtn" class="back-btn app-back-btn">返回</button>
-        
+        <button id="backToFuncBtn" class="back-btn app-back-btn" data-lang-key="backBtn">返回</button>
         <div class="app-header">
-            <h1 class="app-title">线路编号输入</h1>
+            <h1 class="app-title" data-lang-key="inputTitle">线路编号输入</h1>
         </div>
-        
         <div class="app-content input-content">
             <div class="input-keyboard-suggest-wrap">
-                <!-- 输入+键盘容器 -->
                 <div class="input-keyboard-wrap">
                     <div class="input-container">
                         <div class="input-title-wrap">
-                            <h2 class="input-title">请输入线路编号</h2>
+                            <h2 class="input-title" data-lang-key="inputTitle">请输入线路编号</h2>
                             <div class="input-box">
                                 <div class="input-field-wrap">
-                                    <label for="routeNumberInput">线路编号</label>
-                                    <input type="text" id="routeNumberInput" class="custom-input" readonly placeholder="点击输入线路编号" />
+                                    <label for="routeNumberInput" data-lang-key="routeNumberLabel">线路编号</label>
+                                    <input type="text" id="routeNumberInput" class="custom-input" readonly 
+                                        placeholder="点击输入线路编号" data-lang-key="inputPlaceholder">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- 自定义键盘（默认显示） -->
+                    <!-- 自定义键盘 -->
                     <div id="customKeyboard" class="custom-keyboard">
                         <div class="keyboard-grid">
                             <div class="key-group">
@@ -157,7 +146,6 @@
                                 <div class="key-sub-wrap">
                                     <button class="sub-letter-btn" data-key="Y">Y</button>
                                     <button class="sub-letter-btn" data-key="Z">Z</button>
-                                    <button class="empty-sub-btn"></button>
                                 </div>
                             </div>
                             <div class="key-group-empty"></div>
@@ -168,47 +156,59 @@
                             <div class="key-group-empty"></div>
                         </div>
                         <div class="keyboard-func-group">
-                            <button id="keyboardDeleteBtn" class="func-key delete-key">删除</button>
-                            <button id="keyboardClearBtn" class="func-key clear-key">清空</button>
-                            <button id="keyboardConfirmBtn" class="func-key confirm-key">确认</button>
+                            <button id="keyboardDeleteBtn" class="func-key delete-key" data-lang-key="deleteBtn">删除</button>
+                            <button id="keyboardClearBtn" class="func-key clear-key" data-lang-key="clearBtn">清空</button>
                         </div>
                     </div>
                 </div>
-                
-                <!-- 线路匹配建议面板 -->
                 <div id="routeSuggestPanel" class="route-suggest-panel">
-                    <div class="suggest-title">匹配的线路</div>
+                    <div class="suggest-title" data-lang-key="suggestTitle">匹配的线路</div>
                     <div id="suggestList" class="suggest-list"></div>
                 </div>
             </div>
         </div>
-        <div class="page-id-label">BETA WEBSITE</div>
+        <div class="page-id-label"></div>
     </div>
 
-    <!-- 站点显示画面（App 风格优化） -->
+    <!-- 站点显示画面 -->
     <div id="stopScreen" class="screen stop-screen hidden">
-        <!-- 固定左上角返回按钮 -->
-        <button id="backToInputBtn" class="back-btn app-back-btn">返回</button>
-        
-        <!-- App 风格头部 -->
+        <button id="backToInputBtn" class="back-btn app-back-btn" data-lang-key="backBtn">返回</button>
         <div class="app-header">
-            <h1 class="app-title" id="stopPageTitle">线路站点信息</h1>
+            <h1 class="app-title" id="stopPageTitle" data-lang-key="stopPageTitleWithRoute">test</h1>
         </div>
-        
-        <!-- 核心内容区 -->
         <div class="app-content stop-content">
             <div id="stopContainer" class="stop-container">
                 <!-- 内容由JS动态渲染 -->
             </div>
         </div>
-        <div class="page-id-label">BETA WEBSITE</div>
+        <div class="page-id-label"></div>
     </div>
 
-    <script src="/sibstestweb/routedata.js"></script>
-    <script src="/sibstestweb/updatelog.js"></script>
-    <script src="/sibstestweb/script.js"></script>
+<!-- 在 updateLogScreen 部分添加翻译标记 -->
+<div id="updateLogScreen" class="screen update-log-screen hidden">
+    <button id="backToFuncFromLogBtn" class="back-btn app-back-btn" data-lang-key="backBtn">返回</button>
+    <div class="app-header">
+        <h1 class="app-title" data-lang-key="updateLog">版本更新日志</h1>
+        <div class="app-version">v0.3.1</div>
+    </div>
+    <div class="app-content log-content">
+        <div id="updateLogPanel" class="update-log-panel app-card">
+            <div class="log-meta">
+                <span class="log-version" id="logVersion" data-lang-key="logVersion">版本</span>
+                <span class="log-time" id="logTime" data-lang-key="logTime">更新时间</span>
+            </div>
+            <div class="log-list" id="logList">
+                <!-- 日志内容由JS动态渲染 -->
+            </div>
+        </div>
+    </div>
+    <div class="page-id-label"></div>
+</div>
+    <script src="lang.js"></script>
+    <script src="routedata.js"></script>
+    <script src="updatelog.js"></script>
+    <script src="script.js"></script>
     <script>
-        // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             // 输入框点击唤醒键盘
             const input = document.getElementById('routeNumberInput');
@@ -217,7 +217,6 @@
                     const keyboard = document.getElementById("customKeyboard");
                     if (keyboard) {
                         keyboard.classList.remove("hidden");
-                        // 初始化键盘状态
                         if (typeof Renderer !== 'undefined') {
                             Renderer.initKeyboardValidity(input.value);
                         }
@@ -230,6 +229,12 @@
                 });
                 input.addEventListener('paste', function(e) {
                     e.preventDefault();
+                });
+                
+                // 监听输入框值变化
+                input.addEventListener('change', function() {
+                    Renderer.initKeyboardValidity(input.value);
+                    Renderer.renderRouteSuggestions(input.value);
                 });
             }
         });
