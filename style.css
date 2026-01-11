@@ -1,39 +1,73 @@
-/* 全局样式重置 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* 优化多语言字体 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+/* 根变量定义（方便多语言适配） */
+:root {
+    --primary-color: #4a90e2;
+    --primary-dark: #3a80d2;
+    --primary-light: rgba(74, 144, 226, 0.1);
+    --text-primary: #1d1d1f;
+    --text-secondary: #666;
+    --text-tertiary: #999;
+    --bg-primary: #f5f5f7;
+    --bg-white: #ffffff;
+    --border-light: #e0e0e0;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --transition-base: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 英文模式下的字体优化 */
+html[lang="en-US"] {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
-    background-color: #f5f5f7;
-    color: #1d1d1f;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     min-height: 100vh;
     overflow-x: hidden;
+    line-height: 1.5; /* 优化行高，适配中英文 */
 }
 
 /* 通用App样式 */
 .app-card {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    transition: all 0.2s ease;
+    background: var(--bg-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-base);
     overflow: hidden;
 }
 
 .app-header {
-    background: linear-gradient(135deg, #4a90e2 0%, #5c6bc0 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #5c6bc0 100%);
     color: white;
     padding: 16px 20px;
     position: relative;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .app-title {
     font-size: 20px;
     font-weight: 600;
     text-align: center;
+    /* 优化多语言标题间距 */
+    letter-spacing: 0.5px;
+}
+
+/* 英文模式下标题字间距调整 */
+html[lang="en-US"] .app-title {
+    letter-spacing: 0.3px;
 }
 
 .app-version {
@@ -45,31 +79,67 @@ body {
     opacity: 0.8;
 }
 
-/* 返回按钮样式（矩形） */
+/* 语言切换按钮容器（优化定位） */
+.lang-switch-wrap {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+/* 语言切换按钮样式优化 */
+.lang-btn {
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.lang-btn.active {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary-color);
+}
+
+.lang-btn:not(.active) {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.lang-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* 返回按钮样式 */
 .app-back-btn {
     position: fixed;
     top: 18px;
     left: 20px;
     width: 80px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: rgba(255, 255, 255, 0.9);
-    color: #4a90e2;
+    color: var(--primary-color);
     border: none;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-sm);
     z-index: 999;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: var(--transition-base);
 }
 
 .app-back-btn:hover {
     background: white;
     transform: scale(1.05);
+    box-shadow: var(--shadow-md);
 }
 
 /* 屏幕通用样式 */
@@ -92,17 +162,19 @@ body {
     bottom: 10px;
     right: 10px;
     font-size: 12px;
-    color: #999;
+    color: var(--text-tertiary);
     z-index: 999;
 }
 
-/* 加载页面样式 */
+/* ============================
+   加载页面样式 (loadingScreen)
+   ============================ */
 .loading-screen {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #4a90e2 0%, #5c6bc0 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #5c6bc0 100%);
 }
 
 .loading-container {
@@ -115,6 +187,13 @@ body {
     margin-bottom: 30px;
     font-weight: 600;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* 多语言标题间距优化 */
+    letter-spacing: 1px;
+}
+
+html[lang="en-US"] .loading-title {
+    font-size: 24px;
+    letter-spacing: 0.5px;
 }
 
 .loading-img-wrap {
@@ -129,7 +208,9 @@ body {
     object-fit: contain;
 }
 
-/* testweb_pag2：功能选择页面 */
+/* ============================
+   功能选择页面 (funcScreen)
+   ============================ */
 .func-content {
     padding-top: 30px;
 }
@@ -147,6 +228,15 @@ body {
     align-items: center;
     padding: 20px;
     cursor: pointer;
+    border-radius: var(--radius-lg);
+    background: var(--bg-white);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+}
+
+.func-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
 }
 
 .func-card-icon {
@@ -154,9 +244,9 @@ body {
     margin-right: 20px;
     width: 60px;
     height: 60px;
-    border-radius: 12px;
-    background: #f0f7ff;
-    color: #4a90e2;
+    border-radius: var(--radius-md);
+    background: var(--primary-light);
+    color: var(--primary-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -170,46 +260,69 @@ body {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #1d1d1f;
+    color: var(--text-primary);
+}
+
+/* 英文模式下功能卡片标题调整 */
+html[lang="en-US"] .func-card-title {
+    font-size: 17px;
 }
 
 .func-card-desc {
     font-size: 14px;
-    color: #666;
+    color: var(--text-secondary);
     line-height: 1.4;
+}
+
+html[lang="en-US"] .func-card-desc {
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 .func-card-arrow {
     font-size: 20px;
-    color: #999;
-    transition: all 0.2s ease;
+    color: var(--text-tertiary);
+    transition: var(--transition-base);
 }
 
 .func-card:hover .func-card-arrow {
-    color: #4a90e2;
+    color: var(--primary-color);
     transform: translateX(5px);
 }
 
-/* 更新日志面板样式 */
-.update-log-panel {
-    max-width: 500px;
-    margin: 30px auto 0;
+/* ============================
+   更新日志页面 (updateLogScreen)
+   ============================ */
+.log-content {
+    padding-top: 30px;
+}
+
+.update-log-screen .app-content {
     padding: 20px;
+}
+
+.update-log-panel {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    box-shadow: var(--shadow-md);
 }
 
 .log-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
     border-bottom: 1px solid #eee;
 }
 
 .log-title {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--primary-color);
 }
 
 .close-log-btn {
@@ -219,17 +332,18 @@ body {
     background: #f5f5f7;
     border: none;
     font-size: 16px;
-    color: #666;
+    color: var(--text-secondary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: var(--transition-base);
 }
 
 .close-log-btn:hover {
     background: #eee;
-    color: #1d1d1f;
+    color: var(--text-primary);
+    transform: rotate(90deg);
 }
 
 .log-meta {
@@ -237,22 +351,24 @@ body {
     gap: 15px;
     margin-bottom: 20px;
     font-size: 14px;
-    color: #666;
+    color: var(--text-secondary);
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
 }
 
 .log-version {
     font-weight: 600;
-    color: #4a90e2;
+    color: var(--primary-color);
 }
 
 .log-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px;
 }
 
 .log-item {
-    padding-bottom: 15px;
+    padding-bottom: 20px;
     border-bottom: 1px solid #eee;
 }
 
@@ -263,33 +379,45 @@ body {
 .log-item-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
 .log-item-version {
+    font-size: 16px;
     font-weight: 600;
-    color: #4a90e2;
+    color: var(--primary-color);
 }
 
 .log-item-time {
     font-size: 12px;
-    color: #999;
+    color: var(--text-tertiary);
+    background: #f5f5f7;
+    padding: 4px 8px;
+    border-radius: 4px;
 }
 
-.log-item-title {
-    font-weight: 600;
-    margin-bottom: 8px;
+.log-item-content ul {
+    padding-left: 20px;
+    margin: 0;
 }
 
 .log-item-content li {
-    list-style: none;
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 5px;
-    line-height: 1.5;
+    margin-bottom: 8px;
+    line-height: 1.6;
+    color: var(--text-primary);
 }
 
-/* testweb_pag3：输入页面样式 - 优化稳定性 */
+.log-item-content li:before {
+    content: "•";
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+/* ============================
+   输入页面 (inputScreen) - 核心优化
+   ============================ */
 .input-content {
     padding-top: 20px;
     width: 100%;
@@ -304,12 +432,12 @@ body {
     margin: 0 auto;
     display: flex;
     gap: 20px;
-    flex-wrap: wrap; /* 确保小屏幕适配 */
+    flex-wrap: wrap;
 }
 
 .input-keyboard-wrap {
     flex: 2;
-    min-width: 300px; /* 最小宽度确保显示 */
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -317,23 +445,52 @@ body {
 
 .route-suggest-panel {
     flex: 1;
-    min-width: 280px; /* 最小宽度确保显示 */
+    min-width: 280px;
     background: white;
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-md);
     height: fit-content;
     max-height: 600px;
     overflow-y: auto;
-    /* 确保始终可见 */
     display: block !important;
+}
+
+.suggest-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.suggest-route-type {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-left: 8px;
+    padding: 2px 6px;
+    background: #f5f5f7;
+    border-radius: 4px;
+}
+
+.suggest-route-num-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.suggest-route-num {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--primary-color);
 }
 
 .input-container {
     background: white;
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-md);
     width: 100%;
 }
 
@@ -344,7 +501,11 @@ body {
 .input-title {
     font-size: 18px;
     margin-bottom: 20px;
-    color: #1d1d1f;
+    color: var(--text-primary);
+}
+
+html[lang="en-US"] .input-title {
+    font-size: 17px;
 }
 
 .input-box {
@@ -361,37 +522,36 @@ body {
 
 .input-field-wrap label {
     font-size: 14px;
-    color: #666;
+    color: var(--text-secondary);
     text-align: left;
 }
 
 .custom-input {
     height: 50px;
     padding: 0 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
     font-size: 18px;
     text-align: center;
     background: #f9f9f9;
-    transition: all 0.2s ease;
+    transition: var(--transition-base);
     width: 100%;
 }
 
 .custom-input:focus {
     outline: none;
-    border-color: #4a90e2;
+    border-color: var(--primary-color);
     background: white;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
-/* 自定义键盘样式 - 确保始终显示 */
+/* 自定义键盘样式 - 核心优化：禁用按键样式强化 */
 .custom-keyboard {
     background: white;
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-md);
     width: 100%;
-    /* 确保始终可见 */
     display: block !important;
 }
 
@@ -417,23 +577,27 @@ body {
 .main-num-key {
     height: 60px;
     border: none;
-    border-radius: 12px;
-    background: #4a90e2;
+    border-radius: var(--radius-md);
+    background: var(--primary-color);
     color: white;
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-base);
 }
 
+/* 禁用按键样式强化：更明显的灰色，区分有效/无效 */
 .main-num-key:disabled {
-    background: #cccccc;
-    color: #999999;
+    background: #e0e0e0;
+    color: var(--text-tertiary);
     cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .main-num-key:hover:not(:disabled) {
-    background: #3a80d2;
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(74, 144, 226, 0.2);
 }
 
 .key-sub-wrap {
@@ -445,22 +609,23 @@ body {
     flex: 1;
     height: 30px;
     border: none;
-    border-radius: 6px;
-    background: #4a90e2;
+    border-radius: var(--radius-sm);
+    background: var(--primary-color);
     color: white;
     font-size: 14px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-base);
 }
 
 .sub-letter-btn:disabled {
-    background: #cccccc;
-    color: #999999;
+    background: #e0e0e0;
+    color: var(--text-tertiary);
     cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .sub-letter-btn:hover:not(:disabled) {
-    background: #3a80d2;
+    background: var(--primary-dark);
 }
 
 .empty-sub-btn, .empty-sub-wrap {
@@ -478,56 +643,87 @@ body {
     max-width: 120px;
     height: 50px;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
-    background: #4a90e2;
+    transition: var(--transition-base);
+    background: var(--primary-color);
     color: white;
 }
 
 .func-key:disabled {
     background: #cccccc;
-    color: #999999;
+    color: var(--text-tertiary);
     cursor: not-allowed;
 }
 
 .func-key:hover:not(:disabled) {
-    background: #3a80d2;
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(74, 144, 226, 0.2);
 }
 
 .suggest-title {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 15px;
-    color: #1d1d1f;
-}
-
-.suggest-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    color: var(--text-primary);
 }
 
 .suggest-item {
-    padding: 15px;
-    border-radius: 12px;
-    background: #f9f9f9;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
     cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.suggest-item:hover {
-    background: #f0f7ff;
-    border-left: 4px solid #4a90e2;
+.suggest-route-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .suggest-route-num {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #4a90e2;
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.suggest-route-type {
+    font-size: 12px;
+    color: #666;
+    background: #f5f5f5;
+    padding: 1px 6px;
+    border-radius: 3px;
+}
+
+.suggest-route-name {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+}
+
+.suggest-shifts-container {
+    padding-left: 4px;
+}
+
+.shift-info-item {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 4px;
+}
+
+.shift-name {
+    font-weight: 500;
+    color: #555;
+}
+
+.shift-route {
+    color: #666;
 }
 
 .suggest-shift-list {
@@ -538,7 +734,7 @@ body {
 
 .suggest-shift-item {
     font-size: 14px;
-    color: #666;
+    color: var(--text-secondary);
     display: flex;
     justify-content: space-between;
 }
@@ -548,7 +744,27 @@ body {
     color: #333;
 }
 
-/* testweb_pag4：站点页面样式 */
+/* 英文模式下方向标签宽度调整 */
+html[lang="en-US"] .dir-label {
+    min-width: 90px; /* 适配英文Start Point/End Point宽度 */
+}
+
+/* 循环线文本样式优化 */
+.suggest-shift-name {
+    word-break: break-all; /* 防止长文本溢出 */
+}
+
+/* 输入框提示文字多语言适配 */
+.custom-input::placeholder {
+    font-size: 14px;
+}
+html[lang="en-US"] .custom-input::placeholder {
+    font-size: 13px;
+}
+
+/* ============================
+   站点页面 (stopScreen) - 运营时间优化
+   ============================ */
 .stop-content {
     padding-top: 20px;
 }
@@ -561,111 +777,399 @@ body {
     gap: 20px;
 }
 
-/* 线路信息栏 */
+/* ========== 全新设计：路线资讯卡 - 现代轻奢风格 ========== */
 .route-info-bar {
-    background: white;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+    border: 1px solid #f0f2ff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(12, 15, 41, 0.05);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-/* 循环线样式 */
+/* 卡片悬浮动效 */
+.route-info-bar:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(12, 15, 41, 0.08);
+}
+
+/* 循环线特殊样式 */
 .route-info-bar.ring-line {
-    border-left: 4px solid #e53e3e;
+    background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+    border-color: #fee8e8;
 }
 
-.route-basic-info {
+/* 装饰性渐变边框 */
+.route-info-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4a90e2 0%, #5c6bc0 100%);
+    border-radius: 20px 20px 0 0;
+}
+
+.route-info-bar.ring-line {
+    border-left-color: #e53e3e;
+    background: linear-gradient(180deg, #ffffff 0%, #fff5f5 100%);
+    border-color: #fee2e2;
+}
+
+.route-info-bar.ring-line .detail-icon {
+    color: #e53e3e;
+}
+
+/* 路线头部（路线号+班次+运营时间按钮） */
+.route-header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
     flex-wrap: wrap;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f8faff;
 }
 
-.route-num-color-wrap {
+/* 路线标识（颜色块+路线号）- 强化视觉 */
+.route-identity {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
+/* 移除原有的细长颜色块，改为路线号背景色 */
 .route-color-block {
-    width: 8px;
-    height: 20px;
-    border-radius: 4px;
+    display: none; /* 隐藏原有的细长颜色块 */
+}
+
+/* 循环线的路线号特殊样式（红色系） */
+.route-info-bar.ring-line .route-num {
+    background: #e53e3e; /* 循环线原色 */
+}
+
+.route-info-bar.ring-line .dir-label,
+.route-info-bar.ring-line .via-label,
+.route-info-bar.ring-line .type-label {
+    color: #e53e3e !important;
+}
+
+.route-info-bar.ring-line .dir-label::before,
+.route-info-bar.ring-line .via-label::before,
+.route-info-bar.ring-line .type-label::before {
+    background: #e53e3e !important;
+}
+
+.route-info-bar.ring-line .route-dest-container {
+    border-left-color: #e53e3e !important;
+}
+
+.dest-dir.ring-line {
+    color: #e53e3e;
+    font-weight: 600;
 }
 
 .route-num {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1d1d1f;
+    background: #4a90e2; /* 默认路线原色，可根据实际路线动态替换 */
+    color: #ffffff !important; /* 文字改为白色，确保对比 */
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    padding: 8px 16px;
+    border-radius: 12px; /* 圆角大小，可根据需求调整 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* 基础信息区域 - 路线号+班次+运营时间按钮 */
+.route-basic-info {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #f5f7ff;
+    margin-bottom: 24px;
+}
+
+/* 路线号容器 - 视觉焦点 */
+.route-num-color-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+/* 班次标签容器 - 横向滚动 + 现代设计 */
 .route-shift-tags {
     display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 4px 0;
+    flex: 1;
+    scrollbar-width: none;
+    padding-bottom: 4px;
 }
 
+.route-shift-tags::-webkit-scrollbar {
+    display: none;
+}
+
+/* 班次标签 - 现代胶囊样式 */
 .shift-tag {
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 14px;
     font-weight: 600;
     color: white;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
 }
 
+/* 标签悬浮效果 */
+.shift-tag:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* 标签内部光效 */
+.shift-tag::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.shift-tag:hover::after {
+    left: 100%;
+}
+
+/* 班次图标 */
+.shift-icon {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.shift-text {
+    line-height: 1;
+}
+
+/* 班次类型配色 */
 .tag-normal {
-    background: #4a90e2;
+    background: linear-gradient(135deg, #4a90e2 0%, #5c6bc0 100%);
 }
 
 .tag-special1 {
-    background: #e53e3e;
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
 }
 
 .tag-special2 {
-    background: #38a169;
+    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
 }
 
 .tag-special3 {
-    background: #9f7aea;
+    background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
 }
 
-/* 循环线标签样式 */
 .ring-line-tag {
     background: #e53e3e !important;
 }
 
+/* 班次标题 */
+.shift-title-cell {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 运营时间按钮 - 现代渐变按钮 */
 .timetable-btn {
-    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 6px;
-    background: #4a90e2;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #4a90e2 0%, #5c6bc0 100%);
     color: white;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
+/* 按钮悬浮效果 */
 .timetable-btn:hover {
-    background: #3a80d2;
+    background: linear-gradient(135deg, #3a80d2 0%, #4b5bc0 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(74, 144, 226, 0.25);
 }
 
-.route-dest-container {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 5px;
-    padding-top: 8px;
-    border-top: 1px solid #eee;
+/* 按钮内部光效 */
+.timetable-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: left 0.6s ease;
 }
 
-/* 循环线方向文本 */
-.dest-dir.ring-line {
-    color: #e53e3e;
+.timetable-btn:hover::after {
+    left: 100%;
+}
+
+.timetable-icon {
+    font-size: 16px;
+}
+
+/* 站点名称样式 - 副站名紧跟主站名 */
+.stop-name-container {
+    line-height: 1.4;
+}
+.stop-name-main {
     font-weight: 600;
+    font-size: 14px;
+}
+.stop-name-en {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+}
+.temp-close-tag {
+    display: inline-block;
+    background: #e53e3e;
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+    margin-right: 8px;
+}
+
+.temp-close-reason {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+/* 路线详情区域 - 网格布局 + 卡片式设计 */
+.route-dest-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* 详情项 - 现代卡片样式 */
+.route-detail-item {
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 16px;
+    border: 1px solid #f0f2ff;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 详情项悬浮效果 */
+.route-detail-item:hover {
+    background: white;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    border-color: #e8f0fe;
+}
+
+/* 详情项左侧装饰条 */
+.route-detail-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #4a90e2;
+    border-radius: 0 2px 2px 0;
+}
+
+.route-info-bar.ring-line .route-detail-item::before {
+    background: #e53e3e;
+}
+
+/* 主要文本（标签）- 现代排版 */
+.main-text {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #666 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+}
+
+/* 次要文本（值）- 突出显示 */
+.sub-text {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: #1a1a1a !important;
+    line-height: 1.4 !important;
+    display: block !important;
+}
+
+.dest-dir {
+    margin-bottom: 8px;
+}
+
+.dir-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.dir-content {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.via-wrap, .route-type-wrap {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 4px;
+}
+
+.via-label, .type-label {
+    font-size: 12px;
+    color: #666;
+    min-width: 60px;
+}
+
+.via-content, .type-content {
+    font-size: 13px;
+    flex: 1;
+    word-break: break-all;
 }
 
 .dest-dir, .via-direction-cn, .via-direction-en, .route-type {
@@ -675,9 +1179,17 @@ body {
 
 .dest-dir .label, .via-direction-cn .label, .via-direction-en .label, .route-type .label {
     font-weight: 600;
-    color: #666;
+    color: var(--text-secondary);
     margin-right: 4px;
-    min-width: 50px;
+    min-width: 60px; /* 优化多语言标签宽度 */
+}
+
+/* 英文模式下标签宽度调整 */
+html[lang="en-US"] .dest-dir .label, 
+html[lang="en-US"] .via-direction-cn .label, 
+html[lang="en-US"] .via-direction-en .label, 
+html[lang="en-US"] .route-type .label {
+    min-width: 80px;
 }
 
 .via-direction-en {
@@ -686,15 +1198,14 @@ body {
 }
 
 .route-type {
-    color: #666;
+    color: var(--text-secondary);
 }
 
-/* 方向切换 + 分页容器 */
 .direction-pagination-wrap {
     background: white;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     padding: 10px 15px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-sm);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -705,23 +1216,25 @@ body {
 .toggle-direction-btn {
     padding: 6px 12px;
     border: none;
-    border-radius: 6px;
-    background: #4a90e2;
+    border-radius: var(--radius-sm);
+    background: var(--primary-color);
     color: white;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-base);
 }
 
 .toggle-direction-btn:disabled {
     background: #cccccc;
-    color: #999;
+    color: var(--text-tertiary);
     cursor: not-allowed;
 }
 
 .toggle-direction-btn:hover:not(:disabled) {
-    background: #3a80d2;
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(74, 144, 226, 0.2);
 }
 
 .pagination-control {
@@ -734,39 +1247,38 @@ body {
     padding: 4px 10px;
     border: none;
     border-radius: 4px;
-    background: #4a90e2;
+    background: var(--primary-color);
     color: white;
     font-size: 13px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-base);
 }
 
 .pagination-btn:disabled {
     background: #cccccc;
-    color: #999;
+    color: var(--text-tertiary);
     cursor: not-allowed;
 }
 
 .pagination-btn:hover:not(:disabled) {
-    background: #3a80d2;
+    background: var(--primary-dark);
 }
 
 .pagination-info {
     font-size: 13px;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .pagination-info span {
     font-weight: 600;
-    color: #4a90e2;
+    color: var(--primary-color);
 }
 
-/* 站点列表样式 */
 .stop-wrap {
     background: white;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     padding: 15px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-sm);
 }
 
 .stop-table {
@@ -779,23 +1291,27 @@ body {
     text-align: left;
     font-size: 13px;
     font-weight: 600;
-    color: #666;
+    color: var(--text-secondary);
     border-bottom: 2px solid #eee;
 }
 
-/* 交换班次序号和站点名称的表头位置 */
 .stop-table th:first-child {
-    text-align: right; /* 班次序号居右 */
-    width: 200px; /* 班次序号列宽度 */
+    text-align: right;
+    width: 200px;
 }
 
 .stop-table th:last-child {
-    text-align: left; /* 站点名称居左 */
-    width: auto; /* 站点名称列自适应 */
+    text-align: left;
+    width: auto;
+}
+
+/* 英文模式下表格列宽调整 */
+html[lang="en-US"] .stop-table th:first-child {
+    width: 220px;
 }
 
 .stop-row-visible {
-    transition: all 0.2s ease;
+    transition: var(--transition-base);
 }
 
 .stop-row-visible:hover {
@@ -808,100 +1324,112 @@ body {
     vertical-align: middle;
 }
 
-/* 交换班次序号和站点名称的单元格位置 */
 .stop-table td:first-child {
-    text-align: right; /* 班次序号居右 */
-    width: 200px; /* 班次序号列宽度 */
-    position: relative; /* 用于连线定位 */
+    text-align: right;
+    width: 200px;
+    position: relative;
     padding-right: 20px;
 }
 
+html[lang="en-US"] .stop-table td:first-child {
+    width: 220px;
+}
+
 .stop-table td:last-child {
-    text-align: left; /* 站点名称居左 */
-    width: auto; /* 站点名称列自适应 */
+    text-align: left;
+    width: auto;
 }
 
-/* 站点名称样式 - 调大字体 */
-.stop-name-container {
+/* 运营时间面板样式 - 支持回程切换 */
+.timetable-direction-controls {
     display: flex;
-    align-items: baseline; /* 修改为baseline对齐，让小字更协调 */
-    flex-wrap: wrap;
-    gap: 6px; /* 减小间距 */
+    gap: 8px;
+    margin-left: 15px;
 }
 
-/* 主站名：黑色 */
-.stop-name-main {
-    font-size: 17px; /* 从15px调大到17px */
+.direction-btn {
+    padding: 8px 16px;
+    border: 1px solid #e8e8e8;
+    border-radius: var(--radius-md);
+    background: #ffffff;
+    color: #333333;
+    font-size: 14px;
     font-weight: 600;
-    color: #000000; /* 主名黑色 */
+    cursor: pointer;
+    transition: var(--transition-base);
+    position: relative;
+    overflow: hidden;
 }
 
-/* 副站名：灰色 - 关键修改 */
-.stop-name-sub {
-    font-size: 12px; /* 更小的字体 */
-    color: #666666; /* 副名灰色 */
-    /* 移除背景和边框 */
-    background: none;
-    padding: 0;
-    border-radius: 0;
-}
-
-.stop-name-en {
-    font-size: 12px;
-    color: #999;
-    font-style: italic;
-    margin-top: 4px;
+.direction-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.02);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
 }
 
-/* 临时暂停站点标签样式 */
-.temp-close-tag {
-    display: inline-flex;
-    align-items: center;
-    margin-left: 8px;
-    padding: 2px 8px;
-    background: #ffebee;
-    color: #e53e3e;
-    font-size: 12px;
-    border-radius: 4px;
+.direction-btn:hover::after {
+    transform: translateX(0);
+}
+
+.direction-btn.active {
+    border-color: var(--route-color, var(--primary-color));
+    background: var(--route-color, var(--primary-color));
+    color: white;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+.direction-btn:hover:not(.active) {
+    border-color: #d0d0d0;
+    background: #fafafa;
+}
+
+.direction-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.timetable-direction-info {
+    font-size: 15px;
     font-weight: 600;
+    color: var(--route-color, var(--primary-color));
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: rgba(74, 144, 226, 0.05);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--route-color, var(--primary-color));
 }
 
-.temp-close-reason {
-    font-size: 11px;
-    color: #992e2e;
-    margin-top: 4px;
-    padding-left: 4px;
-    font-style: italic;
-}
-
-/* ========== 班次序号样式（核心修复：层级、不停站外框、线条裁剪） ========== */
+/* 班次序号样式 - 单条连贯线条方案（修复版） */
 .multi-shift-seq-wrap {
     display: flex;
     align-items: center;
-    gap: 12px; /* 增大间距确保竖直线显示 */
+    gap: 12px;
     position: relative;
     justify-content: flex-end;
     padding: 5px 0;
-    height: 40px; /* 固定高度确保垂直居中 */
+    height: 40px;
 }
 
-/* 竖直线样式 - 核心修复：层级低于序号背景（z-index: -1） */
-.single-shift-seq-wrap::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: -20px; /* 向上延伸更多 */
-    bottom: -20px; /* 向下延伸更多 */
-    width: 2px;
-    background: var(--shift-color); /* 班次颜色变量 */
-    transform: translateX(-50%);
-    z-index: -1; /* 核心修复：线条图层低于序号背景 */
-    /* 新增：线条默认显示，通过后续规则控制隐藏 */
+/* 核心：单条连贯线条（优先级拉满） */
+.single-shift-seq-wrap.shift-in-range-container::before {
+    content: '' !important;
+    position: absolute !important;
+    left: calc(50% - 1px) !important;
+    top: var(--shift-start-top, 0) !important;
+    bottom: var(--shift-end-bottom, 0) !important;
+    width: 2px !important;
+    background: var(--shift-color) !important;
+    z-index: 1 !important;
     display: block !important;
+    opacity: 1 !important;
 }
 
-/* 单个班次序号容器 - 全新样式规则 */
 .single-shift-seq-wrap {
     display: flex;
     align-items: center;
@@ -910,128 +1438,129 @@ body {
     height: 32px;
     border-radius: 50%;
     position: relative;
-    z-index: 1; /* 序号背景层级高于线条 */
-    transition: all 0.15s ease;
+    z-index: 2;
+    transition: var(--transition-base);
 }
 
-/* 1. 中途站点样式：外框=班次颜色，实心=白色 */
-.single-shift-seq-wrap:not(.shift-out-of-range):not(.shift-start-stop):not(.shift-end-stop):not(.shift-start-end-stop) {
-    border: 2px solid var(--shift-color);
-    background: white;
-}
-
-/* 2. 不停站/无该站点样式：核心修复 - 外框+背景都改为灰色 */
-.shift-out-of-range {
-    border: 2px solid #999999 !important; /* 外框灰色 */
-    background: #f5f5f5 !important; /* 背景灰色 */
-    pointer-events: none;
-}
-
-.shift-out-of-range .shift-seq-text {
-    color: #666666 !important; /* 序号文字灰色 */
-    opacity: 0.8;
-}
-
-/* 3. 起点站样式：实心=班次颜色，无外框 */
-.shift-start-stop {
+/* 1. 彻底取消no-seq线条淡化（优先级最高） */
+.single-shift-seq-wrap.no-seq {
+    background: none !important;
     border: none !important;
-    background: var(--shift-color) !important;
+}
+.single-shift-seq-wrap.no-seq .shift-seq-text {
+    color: transparent !important;
+    opacity: 0 !important;
 }
 
-/* 4. 终点站样式：实心=班次颜色，无外框 */
-.shift-end-stop {
-    border: none !important;
-    background: var(--shift-color) !important;
+/* 2. 有序号站点样式 */
+.single-shift-seq-wrap:not(.no-seq):not(.shift-start-stop):not(.shift-end-stop):not(.shift-start-end-stop) {
+    border: 2px solid var(--shift-color) !important;
+    background: white !important;
 }
 
-/* 环线起点+终点 */
+/* 3. 起点/终点样式 */
+.shift-start-stop,
+.shift-end-stop,
 .shift-start-end-stop {
     border: none !important;
     background: var(--shift-color) !important;
 }
-
-/* 只隐藏起点的上方线条和终点的下方线条 */
-.shift-start-stop::before {
-    /* 只隐藏上方部分 */
-    top: 0 !important;
-}
-
-.shift-end-stop::before {
-    /* 只隐藏下方部分 */
-    bottom: 0 !important;
-}
-
-/* 环线起点+终点：只隐藏超出的线条 */
-.shift-start-end-stop::before {
-    top: 0 !important;
-    bottom: 0 !important;
-}
-
 .shift-start-stop .shift-seq-text, 
 .shift-end-stop .shift-seq-text,
 .shift-start-end-stop .shift-seq-text {
     color: white !important;
-    font-weight: 600;
+    font-weight: 600 !important;
 }
 
-/* 序号文字样式 */
 .shift-seq-text {
     font-size: 13px;
     font-weight: 500;
-    color: var(--shift-color); /* 中途站文字=班次颜色 */
+    color: var(--shift-color);
     position: relative;
-    z-index: 2; /* 文字层级最高 */
+    z-index: 3;
 }
 
-/* ========== 运营时间面板UI ========== */
+/* 4. 运营范围外站点隐藏线条 */
+.single-shift-seq-wrap.shift-out-of-range::before,
+.single-shift-seq-wrap.shift-out-of-range::after {
+    display: none !important;
+}
+
+/* ============================
+   运营时间面板 - 极简重构版
+   核心：简洁明了、信息优先、视觉轻量化
+   ============================ */
 .timetable-panel {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5); /* 降低遮罩透明度，减少视觉压迫 */
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    padding: 20px;
-    backdrop-filter: blur(8px);
+    padding: 16px; /* 精简内边距 */
+    backdrop-filter: blur(4px); /* 弱化毛玻璃效果，更简洁 */
+    animation: panelFadeIn 0.2s ease-out forwards;
 }
 
-.timetable-content {
-    background: white;
-    border-radius: 20px;
+/* 面板主体 - 极致精简 */
+.timetable-panel-content {
+    background: #ffffff;
+    border-radius: 12px; /* 简化圆角尺寸 */
     padding: 24px;
-    max-width: 550px;
-    max-height: 85vh;
-    overflow-y: auto;
     width: 100%;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    position: relative;
+    max-width: 600px; /* 适度缩小最大宽度 */
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* 弱化阴影 */
+    animation: panelSlideUp 0.25s ease forwards;
+    transform: translateY(10px);
+    opacity: 0;
 }
 
-.timetable-header {
+/* 简化动画 */
+@keyframes panelFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes panelSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 面板头部 - 极简设计 */
+.timetable-panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 16px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f5f5f5; /* 更浅的分割线 */
 }
 
-.timetable-header h3 {
-    font-size: 20px;
-    font-weight: 700;
+.panel-title {
+    font-size: 20px; /* 缩小标题字号 */
+    font-weight: 600; /* 降低字重，更柔和 */
     color: #1d1d1f;
-    margin: 0;
+    margin: 0; /* 清除默认边距 */
 }
 
-.close-timetable-btn {
+/* 关闭按钮 - 极简样式 */
+.close-panel-btn {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: #f5f5f7;
+    background: #f9f9f9;
     border: none;
     font-size: 18px;
     color: #666;
@@ -1042,94 +1571,400 @@ body {
     transition: all 0.2s ease;
 }
 
-.close-timetable-btn:hover {
-    background: #eee;
-    color: #1d1d1f;
-    transform: scale(1.1);
+.close-panel-btn:hover {
+    background: #f1f1f1;
+    color: #333;
+    transform: rotate(90deg);
 }
 
-/* 班次运营时间卡片 */
-.timetable-shift {
+/* 方向切换区域 - 精简 */
+.timetable-direction-wrap {
     margin-bottom: 20px;
-    padding: 16px;
-    border-radius: 12px;
-    background: #f9f9f9;
-    border-left: 4px solid #4a90e2;
 }
 
-.timetable-shift h4 {
+.timetable-direction-label {
     font-size: 16px;
     font-weight: 600;
+    color: var(--route-color, var(--primary-color));
     margin-bottom: 12px;
-    color: #1d1d1f;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.timetable-shift h4::before {
-    content: '';
+    padding: 8px 12px;
+    background: rgba(74, 144, 226, 0.05);
+    border-radius: 6px;
     display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: currentColor;
 }
 
-.timetable-shift p {
+.switch-timetable-direction-btn {
+    background: var(--route-color, var(--primary-color));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
     font-size: 14px;
-    color: #333;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    padding: 4px 0;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-top: 8px;
 }
 
-.timetable-shift p span:first-child {
-    color: #666;
+.switch-timetable-direction-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+/* 核心内容容器 - 精简间距 */
+.timetable-panel-content {
+    background: #ffffff;
+    border-radius: 16px; /* 增大圆角 */
+    padding: 28px;
+    width: 100%;
+    max-width: 650px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    position: relative;
+}
+
+/* 班次卡片 - 极简风格 */
+.timetable-shift-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.timetable-shift-card:hover {
+    background: #ffffff;
+    border-color: #e8e8e8;
+}
+
+/* 时间表表格 - 极致精简 */
+.timetable-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.timetable-table td {
+    padding: 8px 0; /* 大幅精简内边距 */
+    vertical-align: top;
+    font-size: 14px;
+}
+
+.timetable-label-cell {
     font-weight: 500;
+    color: #666;
+    width: 25%; /* 缩小标签列宽度 */
 }
 
-/* 时间段列表样式 */
-.time-slots-list {
-    padding-left: 0;
-    margin-top: 12px;
+.timetable-value-cell {
+    color: #1d1d1f;
+    line-height: 1.5;
+}
+
+.timetable-value-cell strong {
+    color: var(--route-color, var(--primary-color));
+    font-size: 16px;
+    font-weight: 600;
+    background: rgba(74, 144, 226, 0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* 发车间隔列表 - 极简设计 */
+.interval-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 8px; /* 缩小间距 */
 }
 
-.time-slots-list li {
-    list-style: none;
-    padding: 8px 12px;
-    background: white;
+.interval-list li {
+    padding: 10px 16px;
+    background: #ffffff;
     border-radius: 8px;
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
+    align-items: center;
+    border: 1px solid #f1f3f5;
+    margin-bottom: 8px;
 }
 
-.slot-time {
-    font-weight: 600;
-    color: #4a90e2;
-}
-
-.slot-interval::after {
-    content: '分钟/班';
-    margin-left: 4px;
-    color: #999;
-    font-weight: normal;
-}
-
+/* 空提示样式 - 精简 */
 .empty-tip {
     text-align: center;
-    padding: 30px;
+    padding: 40px 20px; /* 精简内边距 */
     color: #999;
+    font-size: 14px;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px dashed #e0e0e0;
+    margin: 16px 0;
+}
+
+/* 滚动条美化 - 精简 */
+.timetable-panel-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.timetable-panel-content::-webkit-scrollbar-track {
+    background: #f9f9f9;
+    border-radius: 3px;
+}
+
+.timetable-panel-content::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 3px;
+}
+
+.timetable-panel-content::-webkit-scrollbar-thumb:hover {
+    background: #4a90e2;
+}
+
+/* 确认按钮禁用样式 */
+.func-key.disabled, .func-key:disabled {
+    background: #cccccc !important;
+    color: var(--text-tertiary) !important;
+    cursor: not-allowed !important;
+    opacity: 0.7 !important;
+}
+
+/* 确认按钮有效状态（绿色） */
+.func-key:not(.disabled) {
+    background: #28a745 !important;
+    color: white !important;
+}
+
+.func-key:not(.disabled):hover {
+    background: #218838 !important;
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+}
+
+/* ========== 路线详情区（网格布局）- 全新设计 ========== */
+.route-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* 详情项通用样式（卡片化） */
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f5f7ff 100%);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    border: 1px solid #eef2ff;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 详情项hover效果 */
+.detail-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #4a90e2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.detail-item:hover {
+    background: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(74, 144, 226, 0.08);
+}
+
+.detail-item:hover::before {
+    opacity: 1;
+}
+
+/* 循环线详情项特殊样式 */
+.route-info-bar.ring-line .detail-item::before {
+    background: #e53e3e;
+}
+
+/* 详情图标（强化视觉） */
+.detail-icon {
+    font-size: 24px;
+    color: #4a90e2;
+    margin-top: 2px;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    background: rgba(74, 144, 226, 0.1);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.detail-item:hover .detail-icon {
+    transform: scale(1.15);
+    background: rgba(74, 144, 226, 0.2);
+}
+
+/* 循环线图标颜色 */
+.route-info-bar.ring-line .detail-icon {
+    color: #e53e3e;
+    background: rgba(229, 62, 62, 0.1);
+}
+
+.route-info-bar.ring-line .detail-item:hover .detail-icon {
+    background: rgba(229, 62, 62, 0.2);
+}
+
+/* 详情内容（主次分明） */
+.detail-content {
+    flex: 1;
+}
+
+.detail-label {
     font-size: 16px;
-    width: 100%;
+    color: #666666;
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 15px;
+    color: #1a1a1a;
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+/* 主要内容（标签）：粗体大字（匹配 driveDirection/viaDirection/routeType 标签） */
+.driveDirection-label, .viaDirection-label, .routeType-label {
+    font-size: 16px; /* 大字 */
+    font-weight: 700; /* 粗体 */
+    color: #1a1a1a; /* 深色突出 */
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    display: block; /* 确保标签独占一行，视觉更清晰 */
+}
+
+/* 次要内容（值）：常规大小（匹配 driveDirection/viaDirection/routeType 对应数值） */
+.driveDirection-content, .viaDirection-content, .routeType-content {
+    font-size: 14px; /* 常规大小 */
+    font-weight: 400; /* 常规字重 */
+    color: #333; /* 稍浅，突出主要内容 */
+    line-height: 1.5;
+    display: block; /* 确保内容独占一行 */
+}
+
+@media (max-width: 768px) {
+    .main-text {
+        font-size: 15px !important;
+    }
+    .sub-text {
+        font-size: 13px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-text {
+        font-size: 14px !important;
+    }
+    .sub-text {
+        font-size: 12px !important;
+    }
 }
 
 /* 响应式适配 */
+@media (max-width: 768px) {
+    .route-info-bar {
+        padding: 24px 20px;
+        gap: 20px;
+        border-radius: 20px;
+    }
+    
+    .route-header {
+        gap: 16px;
+        padding-bottom: 16px;
+    }
+    
+    .route-num {
+        font-size: 28px;
+    }
+    
+    .shift-tag {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    .timetable-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    
+    .route-details {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .detail-item {
+        padding: 16px;
+        gap: 12px;
+        border-radius: 14px;
+    }
+    
+    .detail-icon {
+        font-size: 20px;
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+    }
+    
+    .detail-value {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .route-info-bar {
+        padding: 16px;
+        border-radius: 16px;
+    }
+    
+    .route-num {
+        font-size: 24px;
+    }
+    
+    .route-basic-info {
+        gap: 12px;
+        padding-bottom: 16px;
+    }
+    
+    .shift-tag {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+    
+    .detail-item {
+        gap: 10px;
+        padding: 14px;
+        border-radius: 12px;
+    }
+    
+    .detail-icon {
+        font-size: 18px;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+    }
+}
+
 @media (max-width: 768px) {
     .app-content {
         padding: 15px;
@@ -1163,33 +1998,104 @@ body {
         height: 30px;
     }
     
-    .timetable-content {
-        padding: 16px;
+    .timetable-panel-content {
+        padding: 20px 16px;
+        max-height: 85vh;
+        border-radius: 12px;
+    }
+    
+    .panel-title {
+        font-size: 18px;
+    }
+    
+    .timetable-table td {
+        padding: 6px 0;
+    }
+    
+    .timetable-label-cell {
+        width: 30%;
+    }
+    
+    .interval-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .timetable-direction-controls {
+        flex-wrap: wrap;
+    }
+    
+    .direction-btn {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .timetable-time-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .timetable-time-item {
+        min-width: 100%;
     }
     
     .timetable-shift {
-        padding: 12px;
+        padding: 22px;
+        margin-bottom: 25px;
     }
     
-    /* 移动端调整列宽 */
     .stop-table th:first-child,
     .stop-table td:first-child {
         width: 150px;
     }
     
+    html[lang="en-US"] .stop-table th:first-child,
+    html[lang="en-US"] .stop-table td:first-child {
+        width: 170px;
+    }
+    
+    /* 优化副站名样式 */
     .stop-name-container {
+        display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
+        gap: 2px;
+    }
+
+    .stop-main-name {
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .stop-sub-name {
+        font-size: 0.8em;
+        color: #666;
+        font-weight: normal;
+    }
+
+    .stop-english-name {
+        font-size: 0.8em;
+        color: #888;
+        font-style: italic;
     }
     
     .temp-close-tag {
         margin-left: 0;
         margin-top: 4px;
     }
+    
+    .timetable-header h3 {
+        font-size: 22px;
+    }
+    
+    .timetable-shift h4 {
+        font-size: 19px;
+    }
+    
 }
 
 @media (max-width: 480px) {
+    
     .app-header {
         padding: 12px 15px;
     }
@@ -1221,9 +2127,266 @@ body {
         padding: 12px;
     }
     
-    /* 移动端调整列宽 */
     .stop-table th:last-child,
     .stop-table td:last-child {
         width: auto;
+    }
+    
+    .timetable-content {
+        padding: 25px 20px;
+    }
+    
+    .timetable-header h3 {
+        font-size: 22px;
+    }
+    
+    .timetable-shift {
+        padding: 20px 18px;
+    }
+    
+    .time-slots-list li {
+        padding: 14px 18px;
+        font-size: 15px;
+    }
+    
+    .slot-time {
+        font-size: 16px;
+    }
+    
+    .slot-interval {
+        padding: 5px 10px;
+        font-size: 14px;
+    }
+    
+    /* 移动端语言切换按钮优化 */
+    .lang-switch-wrap {
+        left: 15px;
+    }
+    
+    .lang-btn {
+        padding: 3px 8px;
+        font-size: 12px;
+    }
+    
+    /* 移动端面板优化 */
+    .panel-title {
+        font-size: 17px;
+    }
+    
+    .close-panel-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    
+    .timetable-shift-card {
+        padding: 18px 16px;
+    }
+    
+    .interval-list li {
+        padding: 10px 12px;
+    }
+}
+
+/* ============================
+   更新日志页面 (updateLogScreen) - 分类样式优化
+   ============================ */
+/* 里程碑样式 */
+.log-item {
+    position: relative;
+    padding: 25px 20px 25px 40px;
+    margin-bottom: 30px;
+    border-radius: var(--radius-md);
+    background: white;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+}
+
+.log-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.log-item::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 30px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    z-index: 2;
+}
+
+.log-item::after {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 42px;
+    /* 修改：将 bottom 改为 height，避免越界 */
+    height: calc(100% - 42px);
+    width: 2px;
+    background: #f0f0f0;
+    z-index: 1;
+}
+
+.log-item:last-child::after {
+    display: none;
+}
+
+/* 版本标题样式 */
+.log-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.log-item-version {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.log-item-version::before {
+    content: '🔖';
+    font-size: 16px;
+}
+
+.log-item-time {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    background: #f8f8f8;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+/* 日志标题 */
+.log-item-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+/* 分类内容容器 */
+.log-content-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 分类标题 */
+.log-category-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 不同分类的颜色标识 */
+.log-category-added .log-category-title {
+    color: #38a169;
+}
+
+.log-category-fixed .log-category-title {
+    color: #e53e3e;
+}
+
+.log-category-removed .log-category-title {
+    color: #9f7aea;
+}
+
+.log-category-revamped .log-category-title {
+    color: #4299e1;
+}
+
+.log-category-improvements .log-category-title {
+    color: #ed8936;
+}
+
+/* 分类图标 */
+.log-category-title::before {
+    font-size: 12px;
+}
+
+.log-category-added .log-category-title::before {
+    content: '➕';
+}
+
+.log-category-fixed .log-category-title::before {
+    content: '✅';
+}
+
+.log-category-removed .log-category-title::before {
+    content: '➖';
+}
+
+.log-category-revamped .log-category-title::before {
+    content: '🔄';
+}
+
+.log-category-improvements .log-category-title::before {
+    content: '✨';
+}
+
+/* 分类列表 */
+.log-category-list {
+    padding-left: 20px;
+}
+
+.log-category-list li {
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.log-category-list li::marker {
+    color: inherit;
+}
+
+/* 空日志提示 */
+.empty-log-tip {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-tertiary);
+    font-size: 14px;
+    background: #fafafa;
+    border-radius: var(--radius-md);
+    border: 1px dashed #e0e0e0;
+    margin: 20px 0;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .log-item {
+        padding: 20px 15px 20px 30px;
+    }
+    
+    .log-item::before {
+        left: 10px;
+        width: 10px;
+        height: 10px;
+    }
+    
+    .log-item::after {
+        left: 14px;
+    }
+    
+    .log-item-version {
+        font-size: 16px;
+    }
+    
+    .log-item-title {
+        font-size: 15px;
     }
 }
