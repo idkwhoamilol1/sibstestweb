@@ -1,12 +1,12 @@
 var updateLogData = {
     title: "Update Logs",
-    version: "v0.3.1",
-    updateTime: "2026-01-10",
+    version: "v0.2.2",
+    updateTime: "2026-01-11",
     logs: [
         {
             id: 1,
             version: "v0.2.2",
-            time: "2026-01-10",
+            time: "2026-01-11",
             title: "Big Improvements",
             content: {
                 added: [
